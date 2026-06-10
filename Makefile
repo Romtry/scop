@@ -1,2 +1,4 @@
+OBJ="";
+
 all:
-	dotnet run
+	dotnet run -- $(OBJ)
