@@ -9,6 +9,7 @@ namespace Tutorial
 {
     class Program
     {
+        public const string IMAGE_PATH = "images/silk.png";
         private static IWindow window;
         private static GL Gl;
 
@@ -155,7 +156,7 @@ namespace Tutorial
             _texture = Gl.GenTexture();
             Gl.ActiveTexture(TextureUnit.Texture0);
             Gl.BindTexture(TextureTarget.Texture2D, _texture);
-            ImageResult result = ImageResult.FromMemory(File.ReadAllBytes("images/silk.png"), ColorComponents.RedGreenBlueAlpha);
+            ImageResult result = ImageResult.FromMemory(File.ReadAllBytes(IMAGE_PATH), ColorComponents.RedGreenBlueAlpha);
             fixed (byte* ptr = result.Data)
             Gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)result.Width,
             (uint)result.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
