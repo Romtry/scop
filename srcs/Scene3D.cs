@@ -1,12 +1,13 @@
 namespace Scop
 {
-    partial class Program
+    partial class Scop
     {
 		// ======= SHADERS 3D =======
         private static readonly string VertexShaderSource3D = @"
         #version 330 core
         layout (location = 0) in vec3 aPosition;
-        layout (location = 1) in vec2 aTextureCoord;
+        layout (location = 1) in vec3 aNormal;
+        layout (location = 2) in vec2 aTextureCoord;
         uniform mat4 uModel;
         uniform mat4 uView;
         uniform mat4 uProjection;
@@ -25,32 +26,53 @@ namespace Scop
         void main()
         {
             out_color = texture(uTexture, frag_texCoords);
+            out_color = vec4(1.0, 0.0, 0.0, 1.0);
         }";
 
         // ======= GÉOMÉTRIE 3D (cube simple) =======
         private static readonly float[] Vertices3D =
         {
-            // face avant
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-            // face arrière
-            -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0f, 0f, 1f,  0.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  0f, 0f, 1f,  1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  0f, 0f, 1f,  1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0f, 0f, 1f,  0.0f, 1.0f,
+
+            -0.5f, -0.5f, -0.5f,  0f, 0f,-1f,  1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  0f, 0f,-1f,  0.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  0f, 0f,-1f,  0.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0f, 0f,-1f,  1.0f, 1.0f,
+
+            -0.5f, -0.5f, -0.5f, -1f, 0f, 0f,  0.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f, -1f, 0f, 0f,  1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f, -1f, 0f, 0f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f, -1f, 0f, 0f,  0.0f, 1.0f,
+
+            0.5f, -0.5f,  0.5f,  1f, 0f, 0f,  0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  1f, 0f, 0f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1f, 0f, 0f,  1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  1f, 0f, 0f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f,  0.5f,  0f, 1f, 0f,  0.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  0f, 1f, 0f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  0f, 1f, 0f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0f, 1f, 0f,  0.0f, 1.0f,
+
+            -0.5f, -0.5f, -0.5f,  0f,-1f, 0f,  0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  0f,-1f, 0f,  1.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  0f,-1f, 0f,  1.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0f,-1f, 0f,  0.0f, 1.0f,
         };
 
         private static readonly uint[] Indices3D =
         {
-            0, 1, 2,  2, 3, 0, // avant
-            4, 5, 6,  6, 7, 4, // arrière
-            0, 4, 7,  7, 3, 0, // gauche
-            1, 5, 6,  6, 2, 1, // droite
-            3, 2, 6,  6, 7, 3, // haut
-            0, 1, 5,  5, 4, 0  // bas
+            0,  1,  2,   0,  2,  3,  // front
+            4,  5,  6,   4,  6,  7,  // back
+            8,  9, 10,   8, 10, 11,  // left
+            12, 13, 14,  12, 14, 15,  // right
+            16, 17, 18,  16, 18, 19,  // top
+            20, 21, 22,  20, 22, 23,  // bottom
         };
+
 
         // pour la rotation 3D
         private static float _angle = 0f;

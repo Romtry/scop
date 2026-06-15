@@ -5,16 +5,18 @@ using System.IO;
 
 namespace Scop
 {
-    partial class Program
+    partial class Scop
     {
         private static unsafe void Load2D()
         {
             // Input
-            InputUtils.SetupInput(window, KeyDown);
+            InputUtils.SetupInput(window, InputUtils.KeyDown);
 
             // GL Init
             Gl = GL.GetApi(window);
             Gl.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+
+            // opacity
             Gl.Enable(EnableCap.Blend);
             Gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 

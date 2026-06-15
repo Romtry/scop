@@ -5,6 +5,13 @@ namespace Scop
 {
     public static class ShaderUtils
     {
+        public static uint CreateShaderProgram(GL gl, string vertexSource, string fragmentSource)
+        {
+            uint vertexShader = CompileShader(gl, ShaderType.VertexShader, vertexSource);
+            uint fragmentShader = CompileShader(gl, ShaderType.FragmentShader, fragmentSource);
+            return LinkProgram(gl, vertexShader, fragmentShader);
+        }
+
         public static uint CompileShader(GL gl, ShaderType type, string source)
         {
             uint shader = gl.CreateShader(type);
@@ -38,13 +45,6 @@ namespace Scop
             gl.DeleteShader(fragmentShader);
 
             return program;
-        }
-
-        public static uint CreateShaderProgram(GL gl, string vertexSource, string fragmentSource)
-        {
-            uint vertexShader = CompileShader(gl, ShaderType.VertexShader, vertexSource);
-            uint fragmentShader = CompileShader(gl, ShaderType.FragmentShader, fragmentSource);
-            return LinkProgram(gl, vertexShader, fragmentShader);
         }
     }
 }

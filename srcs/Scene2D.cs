@@ -1,6 +1,6 @@
 namespace Scop
 {
-    partial class Program
+    partial class Scop
     {
         // ======= SHADERS 2D =======
         private static readonly string VertexShaderSource2D = @"

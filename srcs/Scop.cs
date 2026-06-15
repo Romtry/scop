@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Scop
 {
-    partial class Program
+    partial class Scop
     {
         private static  string   IMAGE_PATH;
         private static  IWindow  window;
@@ -21,6 +21,10 @@ namespace Scop
         private static uint Vao;
         private static uint Shader;
         private static uint _texture;
+
+        private static Matrix4X4<float> _projection;
+        private static Matrix4X4<float> _view;
+        private static Matrix4X4<float> _model;
 
 
 
@@ -47,13 +51,10 @@ namespace Scop
                 case ".png":
                 case ".jpg":
                 case ".jpeg":
-                case ".bmp":
                     is3D = false;
                     break;
 
                 case ".obj":
-                case ".fbx":
-                case ".gltf":
                     is3D = true;
                     break;
 
@@ -69,21 +70,9 @@ namespace Scop
             window.Dispose();
         }
 
-        private static unsafe void OnRender(double obj)
-        {
-            Gl.Clear((uint) ClearBufferMask.ColorBufferBit);
-
-            Gl.BindVertexArray(Vao);
-            Gl.UseProgram(Shader);
-            Gl.ActiveTexture(TextureUnit.Texture0);
-            Gl.BindTexture(TextureTarget.Texture2D, _texture);
-
-            Gl.DrawElements(PrimitiveType.Triangles, (uint) Indices2D.Length, DrawElementsType.UnsignedInt, null);
-        }
-
         private static void OnUpdate(double obj)
         {
-
+            InputUtils.UpdateCamera(obj);
         }
 
         private static void OnFramebufferResize(Vector2D<int> newSize)
@@ -91,20 +80,5 @@ namespace Scop
             Gl.Viewport(newSize);
         }
 
-        private static void OnClose()
-        {
-            Gl.DeleteBuffer(Vbo);
-            Gl.DeleteBuffer(Ebo);
-            Gl.DeleteVertexArray(Vao);
-            Gl.DeleteProgram(Shader);
-        }
-
-        private static void KeyDown(IKeyboard arg1, Key arg2, int arg3)
-        {
-            if (arg2 == Key.Escape)
-            {
-                window.Close();
-            }
-        }
     }
 }
