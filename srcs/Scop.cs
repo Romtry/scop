@@ -12,7 +12,7 @@ namespace Scop
     {
         private static  string   IMAGE_PATH;
         private static  IWindow  window;
-        private static  GL       Gl;
+        public  static  GL       Gl;
         private static  bool     is3D;
 
 

@@ -17,8 +17,12 @@ namespace Scop
             Gl.DrawElements(PrimitiveType.Triangles, (uint) Indices2D.Length, DrawElementsType.UnsignedInt, null);
         }
 
+		private static double _time = 0;
+
         private static unsafe void OnRender3D(double obj)
         {
+			_time += obj;
+
 			Gl.Clear((uint)(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit));
 			Gl.BindVertexArray(Vao);
 			Gl.UseProgram(Shader);
@@ -42,6 +46,11 @@ namespace Scop
 			int modelLoc = Gl.GetUniformLocation(Shader, "uModel");
 			int viewLoc  = Gl.GetUniformLocation(Shader, "uView");
 			int projLoc  = Gl.GetUniformLocation(Shader, "uProjection");
+			int CamMode	 = Gl.GetUniformLocation(Shader, "uCamMode");
+			int timeLoc  = Gl.GetUniformLocation(Shader, "uTime");
+
+			Gl.Uniform1(CamMode, InputUtils.CamMode % 3);
+			Gl.Uniform1(timeLoc, (float)_time);
 
 			Gl.UniformMatrix4(modelLoc, 1, false, (float*)&model);
 			Gl.UniformMatrix4(viewLoc,  1, false, (float*)&view);
@@ -50,6 +59,15 @@ namespace Scop
 			Gl.ActiveTexture(TextureUnit.Texture0);
 			Gl.BindTexture(TextureTarget.Texture2D, _texture);
 
+			if (InputUtils.CamMode % 3 == 2)
+			{
+				Gl.Uniform1(CamMode, 0);
+				Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
+				Gl.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedInt, null);
+
+				Gl.Uniform1(CamMode, 2);
+				Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
+			}
 			Gl.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedInt, null);
         }
 	}

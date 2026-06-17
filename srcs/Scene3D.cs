@@ -8,25 +8,47 @@ namespace Scop
         layout (location = 0) in vec3 aPosition;
         layout (location = 1) in vec3 aNormal;
         layout (location = 2) in vec2 aTextureCoord;
+        uniform float uTime;
+        uniform int uCamMode;
         uniform mat4 uModel;
         uniform mat4 uView;
         uniform mat4 uProjection;
         out vec2 frag_texCoords;
+        out vec3 frag_color;
         void main()
         {
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
             frag_texCoords = aTextureCoord;
+            switch (uCamMode)
+            {
+                case(0):
+                {
+                    frag_color = vec3(0.0, 0.0, 0.0);
+                    break;
+                }
+                case(1):
+                {
+                    frag_color = vec3(sin(uTime), cos(uTime), 0.5);
+                    break;
+                }
+                case(2):
+                {
+                    frag_color = vec3(1.0, 1.0, 1.0);
+                    break;
+                }
+            }
         }";
 
         private static readonly string FragmentShaderSource3D = @"
         #version 330 core
         uniform sampler2D uTexture;
         in vec2 frag_texCoords;
+        in vec3 frag_color;
         out vec4 out_color;
         void main()
         {
             out_color = texture(uTexture, frag_texCoords);
-            out_color = vec4(1.0, 0.0, 0.0, 1.0);
+            out_color = vec4(frag_color, 1.0);
         }";
 
         // ======= GÉOMÉTRIE 3D (cube simple) =======

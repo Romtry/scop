@@ -3,15 +3,18 @@ using Silk.NET.Windowing;
 using System;
 using Silk.NET.Maths;
 using System.Numerics;
-
+using Silk.NET.OpenGL;
 
 namespace Scop
 {
     public static class InputUtils
     {
-        public static float CamX = 0f;
-        public static float CamY = 0f;
-        public static float CamZ = 3f;
+        public static float CamX  = 0f;
+        public static float CamY  = 0f;
+        public static float CamZ  = 3f;
+
+        public static int   CamMode = 0;
+        public static int   Sprint  = 1;
 
         public static bool MoveForward  = false;
         public static bool MoveBack     = false;
@@ -39,7 +42,7 @@ namespace Scop
 
         public static void KeyDown(IWindow window, Key key, int arg3)
         {
-            float speed = 0.1f;
+            if (key == Key.E)                       ++CamMode;
             if (key == Key.Escape)                  window.Close();
             if (key == Key.Left  || key == Key.A)   MoveLeft    = true;
             if (key == Key.Right || key == Key.D)   MoveRight   = true;
@@ -47,6 +50,7 @@ namespace Scop
             if (key == Key.Down  || key == Key.S)   MoveBack    = true;
             if (key == Key.Space)                   MoveUp      = true;
             if (key == Key.ControlLeft)             MoveDown    = true;
+            if (key == Key.ShiftLeft)               Sprint      = 5;
         }
 
         public static void KeyUp(Key key)
@@ -57,6 +61,7 @@ namespace Scop
             if (key == Key.Down  || key == Key.S)   MoveBack    = false;
             if (key == Key.Space)                   MoveUp      = false;
             if (key == Key.ControlLeft)             MoveDown    = false;
+            if (key == Key.ShiftLeft)               Sprint      = 1;
         }
 
         public static float Yaw   = -90f;
@@ -91,7 +96,7 @@ namespace Scop
 
         public static void UpdateCamera(double deltaTime)
         {
-            float speed = 2f * (float)deltaTime;
+            float speed = (4f * (float)deltaTime) * Sprint;
 
             float yawRad   = MathF.PI / 180f * Yaw;
             float pitchRad = MathF.PI / 180f * Pitch;
