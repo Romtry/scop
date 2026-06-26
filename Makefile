@@ -1,4 +1,4 @@
-OBJ ?= cube.obj
+OBJ ?= 42.obj
 OBJ_PATH = images/$(OBJ)
 
 all:

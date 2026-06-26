@@ -8,6 +8,9 @@ namespace Scop
     partial class Scop
     {
         private static uint _indexCount;
+        private static Vertex3D[] vertices3D;
+        private static List<(string, int)> usemtl;
+        private static Dictionary<string, Material> Materials;
 
         private static unsafe void Load3D()
         {
@@ -24,8 +27,16 @@ namespace Scop
 
 
             // Parse OBJ
-            var (vertices3D, indices3D) = ObjParser.ParseOBJ(IMAGE_PATH);
+            var (vertices3D, indices3D, mtllib, parsedUsemtl) = ObjParser.ParseOBJ(IMAGE_PATH);
+            usemtl = parsedUsemtl;
             _indexCount = (uint)indices3D.Length;
+
+            // Parse MTL
+            if (mtllib != null)
+            {
+                string mtlPath = Path.Combine(Path.GetDirectoryName(IMAGE_PATH), mtllib);
+                Materials = MtlLoader.Load(mtlPath);
+            }
 
             // Buffers
             (Vao, Vbo, Ebo) = BufferUtils.CreateBuffers(Gl, vertices3D, indices3D);

@@ -20,10 +20,24 @@ namespace Scop
         public int NormalIndex;
     }
 
+    public struct MeshGroup
+    {
+        public string MaterialName;
+        public int StartIndex;
+        public int IndexCount;
+    }
+
     public static class ObjParser
     {
-        public static (Vertex3D[] vertices, uint[] indices) ParseOBJ(string filePath)
+        public static (Vertex3D[] vertices, uint[] indices, string mtlFile, List<(string, int)>) ParseOBJ(string filePath)
         {
+            string mtlFile = null;
+            var usemtl = new List<(string, int)>();
+
+            // string currentMaterial = null;
+            // int currentStart = 0;
+            // var groups = new List<MeshGroup>();
+
             var positions = new List<(float, float, float)>();
             var normals = new List<(float, float, float)>();
             var texCoords = new List<(float, float)>();
@@ -71,12 +85,25 @@ namespace Scop
                         ParseFaceVertex(parts[i + 1], positions, normals, texCoords, faceVertices);
                     }
                 }
+                else if (trimmed.StartsWith("mtllib "))
+                {
+                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                    mtlFile = parts[1];
+                }
+                else if (trimmed.StartsWith("usemtl "))
+                {
+                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                    usemtl.Add ((parts[1], faceVertices.Count));
+                }
             }
+
 
             var vertices = new Vertex3D[faceVertices.Count];
             for (int i = 0; i < faceVertices.Count; i++)
             {
+                // Console.WriteLine($"faceVertices.Count : {faceVertices.Count}\ni : {i}\nfv : {faceVertices[i].PosIndex}");
                 var fv = faceVertices[i];
+                // Console.WriteLine($"positions.Count : {positions.Count}\nfv.PosIndex : {fv.PosIndex}");
                 var pos = positions[fv.PosIndex];
                 var normal = fv.NormalIndex >= 0 ? normals[fv.NormalIndex] : (0, 0, 1);
                 var tex = fv.TexIndex >= 0 ? texCoords[fv.TexIndex] : (0, 0);
@@ -96,7 +123,7 @@ namespace Scop
 
             var indices = Enumerable.Range(0, vertices.Length).Select(i => (uint)i).ToArray();
 
-            return (vertices, indices);
+            return (vertices, indices, mtlFile, usemtl);
         }
 
         private static void ParseFaceVertex(string vertex,
@@ -107,7 +134,11 @@ namespace Scop
         {
             var indices = vertex.Split('/');
 
-            int posIndex = int.Parse(indices[0]) - 1;
+            int posIndex = int.Parse(indices[0]);
+            if (posIndex < 0)
+                posIndex = positions.Count + posIndex;
+            else
+                posIndex = posIndex - 1;
             int texIndex = indices.Length > 1 && !string.IsNullOrEmpty(indices[1]) 
                 ? int.Parse(indices[1]) - 1
                 : -1;

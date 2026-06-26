@@ -13,6 +13,7 @@ namespace Scop
         uniform mat4 uModel;
         uniform mat4 uView;
         uniform mat4 uProjection;
+        uniform vec3 uKd;
         out vec2 frag_texCoords;
         out vec3 frag_color;
         void main()
@@ -23,7 +24,7 @@ namespace Scop
             {
                 case(0):
                 {
-                    frag_color = vec3(0.0, 0.0, 0.0);
+                    frag_color = vec3(uKd);
                     break;
                 }
                 case(1):
