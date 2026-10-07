@@ -38,7 +38,7 @@ namespace Scop
                 }
                 case(2):
                 {
-                    frag_color = vec3(1.0, 1.0, 1.0);
+                    frag_color = vec3(0.0, 0.0, 0.0);
                     break;
                 }
             }

@@ -37,8 +37,6 @@ namespace Scop
             // Shader
             Shader = ShaderUtils.CreateShaderProgram(Gl, VertexShaderSource3D, FragmentShaderSource3D);
             ShaderUtils.CacheUniformLocations(Gl, Shader);
-            _hasTextureLoc = Gl.GetUniformLocation(Shader, "uHasTexture");
-            _textureLoc    = Gl.GetUniformLocation(Shader, "uTexture");
 
             // Parse MTL
             if (mtllib != null)
@@ -46,11 +44,6 @@ namespace Scop
                 string mtlPath = Path.Combine(Path.GetDirectoryName(IMAGE_PATH), mtllib);
                 Materials = MtlLoader.Load(mtlPath, Gl, Shader);
             }
-
-            // Texture
-            // _texture = Gl.GenTexture();
-            // Gl.ActiveTexture(TextureUnit.Texture0);
-            // Gl.BindTexture(TextureTarget.Texture2D, _texture);
 
             // Matrices
             float aspectRatio = (float)window.Size.X / window.Size.Y;

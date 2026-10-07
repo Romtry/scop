@@ -1,0 +1,13 @@
+	# Blender 4.0.1 MTL File: 'compass4.blend'
+	# www.blender.org
+
+	newmtl DefaultMaterial
+	Ka 1.000000 1.000000 1.000000
+	Ks 0.000000 0.000000 0.000000
+	Ke 0.000000 0.000000 0.000000
+	Ni 1.450000
+	d 1.000000
+	illum 1
+	map_Kd compass1_low_DefaultMaterial_BaseColor.png
+	map_Ns compass1_low_DefaultMaterial_Roughness.png
+	map_refl compass1_low_DefaultMaterial_Metallic.png

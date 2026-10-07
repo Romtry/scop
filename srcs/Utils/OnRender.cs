@@ -47,19 +47,6 @@ namespace Scop
 				10000f
 			);
 
-			// int modelLoc = Gl.GetUniformLocation(Shader, "uModel");
-			// int viewLoc  = Gl.GetUniformLocation(Shader, "uView");
-			// int projLoc  = Gl.GetUniformLocation(Shader, "uProjection");
-			// int CamMode	 = Gl.GetUniformLocation(Shader, "uCamMode");
-			// int timeLoc  = Gl.GetUniformLocation(Shader, "uTime");
-			// int kdLoc = Gl.GetUniformLocation(Shader, "uKd");
-			// int kaLoc = Gl.GetUniformLocation(Shader, "uKa");
-			// int ksLoc = Gl.GetUniformLocation(Shader, "uKs");
-			// int _nsLoc = Gl.GetUniformLocation(Shader, "uNs");
-			// int lightPosLoc = Gl.GetUniformLocation(Shader, "uLightPos");
-			// int viewPosLoc  = Gl.GetUniformLocation(Shader, "uViewPos");
-			// int LightIntensity  = Gl.GetUniformLocation(Shader, "uLightIntensity");
-
 			Gl.Uniform1(_camModeLoc, InputUtils.CamMode % 3);
 			Gl.Uniform1(_timeLoc, (float)_time);
 
@@ -87,11 +74,11 @@ namespace Scop
 				Gl.Uniform3(_kaLoc, ref ka);
 				if (InputUtils.CamMode % 3 == 2)
 				{
-					Gl.Uniform1(_camModeLoc, 0);
+					Gl.Uniform1(_camModeLoc, 2);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
 					Gl.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedInt, null);
 
-					Gl.Uniform1(_camModeLoc, 2);
+					Gl.Uniform1(_camModeLoc, 0);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
 				}
 				Gl.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedInt, null);
@@ -113,10 +100,11 @@ namespace Scop
 
 				if (InputUtils.CamMode % 3 == 2)
 				{
-					Gl.Uniform1(_camModeLoc, 0);
+					Gl.Uniform1(_camModeLoc, 2);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
 					Gl.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, (void*)(startIndex * sizeof(uint)));
-					Gl.Uniform1(_camModeLoc, 2);
+
+					Gl.Uniform1(_camModeLoc, 0);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
 				}
 				if (InputUtils.CamMode % 3 == 0)
