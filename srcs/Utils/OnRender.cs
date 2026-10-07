@@ -1,5 +1,6 @@
 using Silk.NET.OpenGL;
 using Silk.NET.Maths;
+using System.Numerics;
 
 namespace Scop
 {
@@ -26,6 +27,8 @@ namespace Scop
 			Gl.Clear((uint)(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit));
 			Gl.BindVertexArray(Vao);
 			Gl.UseProgram(Shader);
+			Gl.ActiveTexture(TextureUnit.Texture0);
+			Gl.Uniform1(Gl.GetUniformLocation(Shader, "uTexture"), 0);
 
 			var model = Matrix4X4<float>.Identity;
 
@@ -38,69 +41,86 @@ namespace Scop
 			);
 
 			var proj = Matrix4X4.CreatePerspectiveFieldOfView(
-				MathF.PI / 4f,
+				Config.Fov * MathF.PI / 180f,
 				800f / 600f,
-				0.1f, 10000f
+				0.1f,
+				10000f
 			);
 
-			int modelLoc = Gl.GetUniformLocation(Shader, "uModel");
-			int viewLoc  = Gl.GetUniformLocation(Shader, "uView");
-			int projLoc  = Gl.GetUniformLocation(Shader, "uProjection");
-			int CamMode	 = Gl.GetUniformLocation(Shader, "uCamMode");
-			int timeLoc  = Gl.GetUniformLocation(Shader, "uTime");
-			int kdLocation = Gl.GetUniformLocation(Shader, "uKd");
+			// int modelLoc = Gl.GetUniformLocation(Shader, "uModel");
+			// int viewLoc  = Gl.GetUniformLocation(Shader, "uView");
+			// int projLoc  = Gl.GetUniformLocation(Shader, "uProjection");
+			// int CamMode	 = Gl.GetUniformLocation(Shader, "uCamMode");
+			// int timeLoc  = Gl.GetUniformLocation(Shader, "uTime");
+			// int kdLoc = Gl.GetUniformLocation(Shader, "uKd");
+			// int kaLoc = Gl.GetUniformLocation(Shader, "uKa");
+			// int ksLoc = Gl.GetUniformLocation(Shader, "uKs");
+			// int _nsLoc = Gl.GetUniformLocation(Shader, "uNs");
+			// int lightPosLoc = Gl.GetUniformLocation(Shader, "uLightPos");
+			// int viewPosLoc  = Gl.GetUniformLocation(Shader, "uViewPos");
+			// int LightIntensity  = Gl.GetUniformLocation(Shader, "uLightIntensity");
 
-			Gl.Uniform1(CamMode, InputUtils.CamMode % 3);
-			Gl.Uniform1(timeLoc, (float)_time);
+			Gl.Uniform1(_camModeLoc, InputUtils.CamMode % 3);
+			Gl.Uniform1(_timeLoc, (float)_time);
 
-			Gl.UniformMatrix4(modelLoc, 1, false, (float*)&model);
-			Gl.UniformMatrix4(viewLoc,  1, false, (float*)&view);
-			Gl.UniformMatrix4(projLoc,  1, false, (float*)&proj);
+			Gl.Uniform1(_lightIntensity, (float)(((InputUtils.LightLvl % 5) / 4.0f) * 2.0f));
+			Vector3 lightPosition = new Vector3(
+				5.0f,
+				3.0f,
+				5.0f
+			);
+			Gl.Uniform3(_lightPosLoc, lightPosition);
+			Gl.Uniform3(_viewPosLoc, InputUtils.CamX, InputUtils.CamY, InputUtils.CamZ);
 
-			Gl.ActiveTexture(TextureUnit.Texture0);
-			Gl.BindTexture(TextureTarget.Texture2D, _texture);
+			Gl.UniformMatrix4(_modelLoc, 1, false, (float*)&model);
+			Gl.UniformMatrix4(_viewLoc,  1, false, (float*)&view);
+			Gl.UniformMatrix4(_projLoc,  1, false, (float*)&proj);
 
 			if (usemtl.Count == 0)
 			{
+				Vector3 kd = new Vector3(1.0f, 1.0f, 1.0f);
+				Gl.Uniform3(_kdLoc, ref kd);
+				Vector3 ks = new Vector3(0f, 0f, 0f);
+				Gl.Uniform3(_ksLoc, ref ks);
+				Gl.Uniform1(_nsLoc, 6f);
+				Vector3 ka = new Vector3(0.2f, 0.2f, 0.2f);
+				Gl.Uniform3(_kaLoc, ref ka);
 				if (InputUtils.CamMode % 3 == 2)
 				{
-					Gl.Uniform1(CamMode, 0);
+					Gl.Uniform1(_camModeLoc, 0);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
 					Gl.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedInt, null);
 
-					Gl.Uniform1(CamMode, 2);
+					Gl.Uniform1(_camModeLoc, 2);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
 				}
-                // Console.WriteLine($"count : {count}\nstartIndex : {startIndex}\n");
 				Gl.DrawElements(PrimitiveType.Triangles, _indexCount, DrawElementsType.UnsignedInt, null);
 			}
 
 			for (int i = 0; i < usemtl.Count; i++)
 			{
 				var kd = Materials[usemtl[i].Item1].Diffuse;
-				Gl.Uniform3(kdLocation, ref kd);
+				Gl.Uniform3(_kdLoc, ref kd);
+				var ks = Materials[usemtl[i].Item1].SpecularColor;
+				Gl.Uniform3(_ksLoc, ref ks);
+				Gl.Uniform1(_nsLoc, Materials[usemtl[i].Item1].SpecularExp);
+				Gl.Uniform3(_kaLoc, Materials[usemtl[i].Item1].Ambient);
 
-				int startIndex = 0;
-				if (i != 0)
-					startIndex = usemtl[i - 1].Item2;
-
-				uint count = 0;
-				if (i == usemtl.Count - 1)
-					count = (uint)(_indexCount - startIndex);
-				else
-					count = (uint)(usemtl[i].Item2 - startIndex);
+				int startIndex = usemtl[i].Item2;
+				int endIndex   = (i + 1 < usemtl.Count) ? usemtl[i + 1].Item2 : (int)_indexCount;
+				uint count     = (uint)(endIndex - startIndex);
+				if (count == 0) continue;
 
 				if (InputUtils.CamMode % 3 == 2)
 				{
-					Gl.Uniform1(CamMode, 0);
+					Gl.Uniform1(_camModeLoc, 0);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
 					Gl.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, (void*)(startIndex * sizeof(uint)));
-
-					Gl.Uniform1(CamMode, 2);
+					Gl.Uniform1(_camModeLoc, 2);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
 				}
-				// Console.WriteLine($"count : {count}\nstartIndex : {startIndex}");
-                // Console.WriteLine($"count : {count}\nstartIndex : {startIndex}\n");
+				if (InputUtils.CamMode % 3 == 0)
+					Gl.BindTexture(TextureTarget.Texture2D, Materials[usemtl[i].Item1].TextureId);
 				Gl.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, (void*)(startIndex * sizeof(uint)));
 			}
 		}

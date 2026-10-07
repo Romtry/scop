@@ -34,10 +34,6 @@ namespace Scop
             string mtlFile = null;
             var usemtl = new List<(string, int)>();
 
-            // string currentMaterial = null;
-            // int currentStart = 0;
-            // var groups = new List<MeshGroup>();
-
             var positions = new List<(float, float, float)>();
             var normals = new List<(float, float, float)>();
             var texCoords = new List<(float, float)>();
@@ -101,9 +97,7 @@ namespace Scop
             var vertices = new Vertex3D[faceVertices.Count];
             for (int i = 0; i < faceVertices.Count; i++)
             {
-                // Console.WriteLine($"faceVertices.Count : {faceVertices.Count}\ni : {i}\nfv : {faceVertices[i].PosIndex}");
                 var fv = faceVertices[i];
-                // Console.WriteLine($"positions.Count : {positions.Count}\nfv.PosIndex : {fv.PosIndex}");
                 var pos = positions[fv.PosIndex];
                 var normal = fv.NormalIndex >= 0 ? normals[fv.NormalIndex] : (0, 0, 1);
                 var tex = fv.TexIndex >= 0 ? texCoords[fv.TexIndex] : (0, 0);

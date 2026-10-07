@@ -5,20 +5,36 @@ namespace Scop
 {
     public static class ShaderUtils
     {
-        public static uint CreateShaderProgram(GL gl, string vertexSource, string fragmentSource)
+        public static uint CreateShaderProgram(GL Gl, string vertexSource, string fragmentSource)
         {
-            uint vertexShader = CompileShader(gl, ShaderType.VertexShader, vertexSource);
-            uint fragmentShader = CompileShader(gl, ShaderType.FragmentShader, fragmentSource);
-            return LinkProgram(gl, vertexShader, fragmentShader);
+            uint vertexShader = CompileShader(Gl, ShaderType.VertexShader, vertexSource);
+            uint fragmentShader = CompileShader(Gl, ShaderType.FragmentShader, fragmentSource);
+            return LinkProgram(Gl, vertexShader, fragmentShader);
         }
 
-        public static uint CompileShader(GL gl, ShaderType type, string source)
+        public static void CacheUniformLocations(GL Gl, uint Shader)
         {
-            uint shader = gl.CreateShader(type);
-            gl.ShaderSource(shader, source);
-            gl.CompileShader(shader);
+            Scop._modelLoc    = Gl.GetUniformLocation(Shader, "uModel");
+            Scop._viewLoc     = Gl.GetUniformLocation(Shader, "uView");
+            Scop._projLoc     = Gl.GetUniformLocation(Shader, "uProjection");
+            Scop._camModeLoc  = Gl.GetUniformLocation(Shader, "uCamMode");
+            Scop._timeLoc     = Gl.GetUniformLocation(Shader, "uTime");
+            Scop._kdLoc       = Gl.GetUniformLocation(Shader, "uKd");
+            Scop._kaLoc       = Gl.GetUniformLocation(Shader, "uKa");
+            Scop._ksLoc       = Gl.GetUniformLocation(Shader, "uKs");
+            Scop._nsLoc       = Gl.GetUniformLocation(Shader, "uNs");
+            Scop._lightPosLoc = Gl.GetUniformLocation(Shader, "uLightPos");
+			Scop._viewPosLoc  = Gl.GetUniformLocation(Shader, "uViewPos");
+			Scop._lightIntensity  = Gl.GetUniformLocation(Shader, "uLightIntensity");
+        }
 
-            string infoLog = gl.GetShaderInfoLog(shader);
+        public static uint CompileShader(GL Gl, ShaderType type, string source)
+        {
+            uint shader = Gl.CreateShader(type);
+            Gl.ShaderSource(shader, source);
+            Gl.CompileShader(shader);
+
+            string infoLog = Gl.GetShaderInfoLog(shader);
             if (!string.IsNullOrWhiteSpace(infoLog))
             {
                 Console.WriteLine($"Error compiling {type} shader: {infoLog}");
@@ -26,23 +42,23 @@ namespace Scop
             return shader;
         }
 
-        public static uint LinkProgram(GL gl, uint vertexShader, uint fragmentShader)
+        public static uint LinkProgram(GL Gl, uint vertexShader, uint fragmentShader)
         {
-            uint program = gl.CreateProgram();
-            gl.AttachShader(program, vertexShader);
-            gl.AttachShader(program, fragmentShader);
-            gl.LinkProgram(program);
+            uint program = Gl.CreateProgram();
+            Gl.AttachShader(program, vertexShader);
+            Gl.AttachShader(program, fragmentShader);
+            Gl.LinkProgram(program);
 
-            gl.GetProgram(program, GLEnum.LinkStatus, out var status);
+            Gl.GetProgram(program, GLEnum.LinkStatus, out var status);
             if (status == 0)
             {
-                Console.WriteLine($"Error linking shader: {gl.GetProgramInfoLog(program)}");
+                Console.WriteLine($"Error linking shader: {Gl.GetProgramInfoLog(program)}");
             }
 
-            gl.DetachShader(program, vertexShader);
-            gl.DetachShader(program, fragmentShader);
-            gl.DeleteShader(vertexShader);
-            gl.DeleteShader(fragmentShader);
+            Gl.DetachShader(program, vertexShader);
+            Gl.DetachShader(program, fragmentShader);
+            Gl.DeleteShader(vertexShader);
+            Gl.DeleteShader(fragmentShader);
 
             return program;
         }

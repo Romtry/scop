@@ -31,18 +31,26 @@ namespace Scop
             usemtl = parsedUsemtl;
             _indexCount = (uint)indices3D.Length;
 
-            // Parse MTL
-            if (mtllib != null)
-            {
-                string mtlPath = Path.Combine(Path.GetDirectoryName(IMAGE_PATH), mtllib);
-                Materials = MtlLoader.Load(mtlPath);
-            }
-
             // Buffers
             (Vao, Vbo, Ebo) = BufferUtils.CreateBuffers(Gl, vertices3D, indices3D);
 
             // Shader
             Shader = ShaderUtils.CreateShaderProgram(Gl, VertexShaderSource3D, FragmentShaderSource3D);
+            ShaderUtils.CacheUniformLocations(Gl, Shader);
+            _hasTextureLoc = Gl.GetUniformLocation(Shader, "uHasTexture");
+            _textureLoc    = Gl.GetUniformLocation(Shader, "uTexture");
+
+            // Parse MTL
+            if (mtllib != null)
+            {
+                string mtlPath = Path.Combine(Path.GetDirectoryName(IMAGE_PATH), mtllib);
+                Materials = MtlLoader.Load(mtlPath, Gl, Shader);
+            }
+
+            // Texture
+            // _texture = Gl.GenTexture();
+            // Gl.ActiveTexture(TextureUnit.Texture0);
+            // Gl.BindTexture(TextureTarget.Texture2D, _texture);
 
             // Matrices
             float aspectRatio = (float)window.Size.X / window.Size.Y;

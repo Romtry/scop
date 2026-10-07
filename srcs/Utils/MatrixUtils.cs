@@ -5,9 +5,6 @@ namespace Scop
 {
     static class MatrixUtils
     {
-        /// <summary>
-        /// Crée une matrice de projection perspective
-        /// </summary>
         public static Matrix4X4<float> CreatePerspectiveProjection(float fov, float aspectRatio, float nearPlane, float farPlane)
         {
             float f = 1.0f / MathF.Tan(fov / 2.0f);
@@ -21,9 +18,6 @@ namespace Scop
             );
         }
 
-        /// <summary>
-        /// Crée une matrice de projection orthographique (pour 2D)
-        /// </summary>
         public static Matrix4X4<float> CreateOrthographicProjection(float left, float right, float bottom, float top, float nearPlane, float farPlane)
         {
             float rl = 1.0f / (right - left);
@@ -38,9 +32,6 @@ namespace Scop
             );
         }
 
-        /// <summary>
-        /// Crée une matrice de vue (caméra)
-        /// </summary>
         public static Matrix4X4<float> CreateLookAt(Vector3D<float> eye, Vector3D<float> center, Vector3D<float> up)
         {
             Vector3D<float> f = Vector3D.Normalize(center - eye);
@@ -55,49 +46,31 @@ namespace Scop
             );
         }
 
-        /// <summary>
-        /// Crée une matrice de modèle (identité de base)
-        /// </summary>
         public static Matrix4X4<float> CreateIdentity()
         {
             return Matrix4X4<float>.Identity;
         }
 
-        /// <summary>
-        /// Applique une translation à une matrice
-        /// </summary>
         public static Matrix4X4<float> Translate(Matrix4X4<float> matrix, Vector3D<float> translation)
         {
             return matrix * Matrix4X4.CreateTranslation(translation);
         }
 
-        /// <summary>
-        /// Applique une rotation autour de X
-        /// </summary>
         public static Matrix4X4<float> RotateX(Matrix4X4<float> matrix, float radians)
         {
             return matrix * Matrix4X4.CreateRotationX(radians);
         }
 
-        /// <summary>
-        /// Applique une rotation autour de Y
-        /// </summary>
         public static Matrix4X4<float> RotateY(Matrix4X4<float> matrix, float radians)
         {
             return matrix * Matrix4X4.CreateRotationY(radians);
         }
 
-        /// <summary>
-        /// Applique une rotation autour de Z
-        /// </summary>
         public static Matrix4X4<float> RotateZ(Matrix4X4<float> matrix, float radians)
         {
             return matrix * Matrix4X4.CreateRotationZ(radians);
         }
 
-        /// <summary>
-        /// Applique une scale à une matrice
-        /// </summary>
         public static Matrix4X4<float> Scale(Matrix4X4<float> matrix, Vector3D<float> scale)
         {
             return matrix * Matrix4X4.CreateScale(scale);

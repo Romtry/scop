@@ -23,6 +23,8 @@ namespace Scop
         public static bool MoveUp       = false;
         public static bool MoveDown     = false;
 
+         public static int LightLvl = 3;
+
         public static void SetupInput(IWindow window, Action<IWindow, Key, int> onKeyDown)
         {
             IInputContext input = window.CreateInput();
@@ -43,6 +45,7 @@ namespace Scop
         public static void KeyDown(IWindow window, Key key, int arg3)
         {
             if (key == Key.E)                       ++CamMode;
+            if (key == Key.L)                       ++LightLvl;
             if (key == Key.Escape)                  window.Close();
             if (key == Key.Left  || key == Key.A)   MoveLeft    = true;
             if (key == Key.Right || key == Key.D)   MoveRight   = true;
@@ -50,7 +53,7 @@ namespace Scop
             if (key == Key.Down  || key == Key.S)   MoveBack    = true;
             if (key == Key.Space)                   MoveUp      = true;
             if (key == Key.ControlLeft)             MoveDown    = true;
-            if (key == Key.ShiftLeft)               Sprint      = 5;
+            if (key == Key.ShiftLeft)               Sprint      = Config.SprintMultiplier;
         }
 
         public static void KeyUp(Key key)
@@ -78,7 +81,7 @@ namespace Scop
                 return;
             }
 
-            float sensitivity = 0.1f;
+            float sensitivity = Config.Sensitivity;
             float dx = (pos.X - _lastMousePos.X) * sensitivity;
             float dy = (_lastMousePos.Y - pos.Y) * sensitivity;
 
@@ -96,7 +99,7 @@ namespace Scop
 
         public static void UpdateCamera(double deltaTime)
         {
-            float speed = (4f * (float)deltaTime) * Sprint;
+            float speed = Config.MoveSpeed * Sprint;
 
             float yawRad   = MathF.PI / 180f * Yaw;
             float pitchRad = MathF.PI / 180f * Pitch;

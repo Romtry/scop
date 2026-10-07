@@ -8,7 +8,7 @@ namespace Scop
         private static void InitWindow()
         {
             var options = WindowOptions.Default;
-            options.Size = new Vector2D<int>(800, 600);
+            options.Size = new Vector2D<int>(Config.WindowWidth, Config.WindowHeight);
             options.Title = "Window";
 
             window = Window.Create(options);

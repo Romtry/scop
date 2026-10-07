@@ -15,9 +15,13 @@ namespace Scop
         uniform mat4 uProjection;
         uniform vec3 uKd;
         out vec2 frag_texCoords;
+        out vec3 frag_normal;
+        out vec3 frag_pos;
         out vec3 frag_color;
         void main()
         {
+            frag_normal = mat3(transpose(inverse(uModel))) * aNormal;
+            frag_pos = vec3(uModel * vec4(aPosition, 1.0));
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
             frag_texCoords = aTextureCoord;
             switch (uCamMode)
@@ -43,13 +47,39 @@ namespace Scop
         private static readonly string FragmentShaderSource3D = @"
         #version 330 core
         uniform sampler2D uTexture;
+        uniform int uCamMode;
+        uniform bool uHasTexture;
+        uniform vec3 uLightPos;
+        uniform vec3 uViewPos;
+        uniform vec3 uKa;
+        uniform vec3 uKs;
+        uniform float uNs;
+        uniform float uLightIntensity;
         in vec2 frag_texCoords;
         in vec3 frag_color;
+        in vec3 frag_normal;
+        in vec3 frag_pos;
         out vec4 out_color;
         void main()
         {
-            out_color = texture(uTexture, frag_texCoords);
-            out_color = vec4(frag_color, 1.0);
+            vec3 baseColor = frag_color;
+            if (uCamMode == 0 && uHasTexture)
+                baseColor = texture(uTexture, frag_texCoords).rgb;
+
+            vec3 norm = normalize(frag_normal);
+            vec3 lightDir = normalize(uLightPos - frag_pos);
+            vec3 viewDir = normalize(uViewPos - frag_pos);
+            vec3 reflectDir = reflect(-lightDir, norm);
+
+            vec3 ambient = uKa * baseColor;
+
+            float diff = max(dot(norm, lightDir), 0.0);
+            vec3 diffuse = diff * baseColor * uLightIntensity;
+
+            float spec = pow(max(dot(viewDir, reflectDir), 0.0), uNs);
+            vec3 specular = uKs * spec * uLightIntensity;
+
+            out_color = vec4(ambient + diffuse + specular, 1.0);
         }";
 
         // ======= GÉOMÉTRIE 3D (cube simple) =======

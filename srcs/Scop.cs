@@ -11,6 +11,7 @@ namespace Scop
     partial class Scop
     {
         private static  string   IMAGE_PATH;
+        public static  string   OBJ_NAME;
         private static  IWindow  window;
         public  static  GL       Gl;
         private static  bool     is3D;
@@ -21,6 +22,18 @@ namespace Scop
         private static uint Vao;
         private static uint Shader;
         private static uint _texture;
+        public static int _modelLoc;
+        public static int _viewLoc;
+        public static int _projLoc;
+        public static int _camModeLoc;
+        public static int _timeLoc;
+        public static int _kdLoc;
+        public static int _kaLoc;
+        public static int _ksLoc;
+        public static int _nsLoc;
+        public static int _lightPosLoc;
+        public static int _viewPosLoc;
+        public static int _lightIntensity;
 
         private static Matrix4X4<float> _projection;
         private static Matrix4X4<float> _view;
@@ -45,6 +58,9 @@ namespace Scop
             }
 
             string extension = Path.GetExtension(IMAGE_PATH);
+
+            if (extension != null && IMAGE_PATH.Contains('/'))
+                OBJ_NAME = IMAGE_PATH.Substring(IMAGE_PATH.LastIndexOf('/') + 1, IMAGE_PATH.Length - IMAGE_PATH.LastIndexOf('/') - extension.Length - 1);
 
             switch (extension)
             {
