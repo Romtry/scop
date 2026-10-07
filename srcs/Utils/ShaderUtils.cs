@@ -14,18 +14,19 @@ namespace Scop
 
         public static void CacheUniformLocations(GL Gl, uint Shader)
         {
-            Scop._modelLoc    = Gl.GetUniformLocation(Shader, "uModel");
-            Scop._viewLoc     = Gl.GetUniformLocation(Shader, "uView");
-            Scop._projLoc     = Gl.GetUniformLocation(Shader, "uProjection");
-            Scop._camModeLoc  = Gl.GetUniformLocation(Shader, "uCamMode");
-            Scop._timeLoc     = Gl.GetUniformLocation(Shader, "uTime");
-            Scop._kdLoc       = Gl.GetUniformLocation(Shader, "uKd");
-            Scop._kaLoc       = Gl.GetUniformLocation(Shader, "uKa");
-            Scop._ksLoc       = Gl.GetUniformLocation(Shader, "uKs");
-            Scop._nsLoc       = Gl.GetUniformLocation(Shader, "uNs");
-            Scop._lightPosLoc = Gl.GetUniformLocation(Shader, "uLightPos");
-			Scop._viewPosLoc  = Gl.GetUniformLocation(Shader, "uViewPos");
-			Scop._lightIntensity  = Gl.GetUniformLocation(Shader, "uLightIntensity");
+            Scop._modelLoc          = Gl.GetUniformLocation(Shader, "uModel");
+            Scop._viewLoc           = Gl.GetUniformLocation(Shader, "uView");
+            Scop._projLoc           = Gl.GetUniformLocation(Shader, "uProjection");
+            Scop._camModeLoc        = Gl.GetUniformLocation(Shader, "uCamMode");
+            Scop._timeLoc           = Gl.GetUniformLocation(Shader, "uTime");
+            Scop._kdLoc             = Gl.GetUniformLocation(Shader, "uKd");
+            Scop._kaLoc             = Gl.GetUniformLocation(Shader, "uKa");
+            Scop._ksLoc             = Gl.GetUniformLocation(Shader, "uKs");
+            Scop._nsLoc             = Gl.GetUniformLocation(Shader, "uNs");
+            Scop._lightPosLoc       = Gl.GetUniformLocation(Shader, "uLightPos");
+			Scop._viewPosLoc        = Gl.GetUniformLocation(Shader, "uViewPos");
+			Scop._lightIntensity    = Gl.GetUniformLocation(Shader, "uLightIntensity");
+            Scop._hasTextures       = Gl.GetUniformLocation(Shader, "uHasTexture");
         }
 
         public static uint CompileShader(GL Gl, ShaderType type, string source)

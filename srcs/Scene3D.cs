@@ -8,16 +8,22 @@ namespace Scop
         layout (location = 0) in vec3 aPosition;
         layout (location = 1) in vec3 aNormal;
         layout (location = 2) in vec2 aTextureCoord;
+
+        uniform int uHasTexture;
+
         uniform float uTime;
         uniform int uCamMode;
+
         uniform mat4 uModel;
         uniform mat4 uView;
         uniform mat4 uProjection;
         uniform vec3 uKd;
+
         out vec2 frag_texCoords;
         out vec3 frag_normal;
         out vec3 frag_pos;
         out vec3 frag_color;
+
         void main()
         {
             frag_normal = mat3(transpose(inverse(uModel))) * aNormal;
@@ -47,24 +53,30 @@ namespace Scop
         private static readonly string FragmentShaderSource3D = @"
         #version 330 core
         uniform sampler2D uTexture;
+
+        uniform int uHasTexture;
         uniform int uCamMode;
-        uniform bool uHasTexture;
+
         uniform vec3 uLightPos;
         uniform vec3 uViewPos;
         uniform vec3 uKa;
         uniform vec3 uKs;
         uniform float uNs;
         uniform float uLightIntensity;
+
         in vec2 frag_texCoords;
         in vec3 frag_color;
         in vec3 frag_normal;
         in vec3 frag_pos;
         out vec4 out_color;
+
         void main()
         {
             vec3 baseColor = frag_color;
-            if (uCamMode == 0 && uHasTexture)
+            if (uCamMode == 0 && uHasTexture == 1)
+            {
                 baseColor = texture(uTexture, frag_texCoords).rgb;
+            }
 
             vec3 norm = normalize(frag_normal);
             vec3 lightDir = normalize(uLightPos - frag_pos);
