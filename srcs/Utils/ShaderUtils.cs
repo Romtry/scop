@@ -27,6 +27,8 @@ namespace Scop
 			Scop._viewPosLoc        = Gl.GetUniformLocation(Shader, "uViewPos");
 			Scop._lightIntensity    = Gl.GetUniformLocation(Shader, "uLightIntensity");
             Scop._hasTextures       = Gl.GetUniformLocation(Shader, "uHasTexture");
+            Scop._hasNsTextures     = Gl.GetUniformLocation(Shader, "uHasNsTexture");
+            Scop._hasReflTextures   = Gl.GetUniformLocation(Shader, "uHasReflTexture");
         }
 
         public static uint CompileShader(GL Gl, ShaderType type, string source)

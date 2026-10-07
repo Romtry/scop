@@ -9,3 +9,5 @@ ke 0 0 0
 d 1
 illum 1
 map_Kd antiquePhone_low_DefaultMaterial_BaseColor.png
+map_Ns antiquePhone_low_DefaultMaterial_Roughness.png
+map_refl antiquePhone_low_DefaultMaterial_Metallic.png

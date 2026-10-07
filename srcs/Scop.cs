@@ -35,6 +35,8 @@ namespace Scop
         public static int _viewPosLoc;
         public static int _lightIntensity;
         public static int _hasTextures;
+        public static int _hasNsTextures;
+        public static int _hasReflTextures;
 
         private static Matrix4X4<float> _projection;
         private static Matrix4X4<float> _view;

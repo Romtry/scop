@@ -10,6 +10,7 @@ namespace Scop
         layout (location = 2) in vec2 aTextureCoord;
 
         uniform int uHasTexture;
+        uniform int uHasNsTexture;
 
         uniform float uTime;
         uniform int uCamMode;
@@ -53,8 +54,14 @@ namespace Scop
         private static readonly string FragmentShaderSource3D = @"
         #version 330 core
         uniform sampler2D uTexture;
+        uniform sampler2D uNsTexture;
+        uniform sampler2D uReflMap;
 
         uniform int uHasTexture;
+        uniform int uHasNsTexture;
+        uniform int uHasReflMap;
+
+        const float PI = 3.14159265;
         uniform int uCamMode;
 
         uniform vec3 uLightPos;
@@ -81,17 +88,39 @@ namespace Scop
             vec3 norm = normalize(frag_normal);
             vec3 lightDir = normalize(uLightPos - frag_pos);
             vec3 viewDir = normalize(uViewPos - frag_pos);
-            vec3 reflectDir = reflect(-lightDir, norm);
 
             vec3 ambient = uKa * baseColor;
 
             float diff = max(dot(norm, lightDir), 0.0);
             vec3 diffuse = diff * baseColor * uLightIntensity;
 
-            float spec = pow(max(dot(viewDir, reflectDir), 0.0), uNs);
+            vec3 reflectDir = reflect(-lightDir, norm);
+            float shininess = uNs;
+            if (uHasNsTexture == 1)
+                shininess = uNs * texture(uNsTexture, frag_texCoords).r;
+            shininess = max(shininess, 1.0);
+
+            float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
             vec3 specular = uKs * spec * uLightIntensity;
 
-            out_color = vec4(ambient + diffuse + specular, 1.0);
+            vec3 color = ambient + diffuse + specular;
+
+            if (uHasReflMap == 1)
+            {
+                vec3 I = normalize(frag_pos - uViewPos);   // caméra -> fragment
+                vec3 R = reflect(I, norm);
+
+                vec2 reflUV;
+                reflUV.x = atan(R.z, R.x) / (2.0 * PI) + 0.5;
+                reflUV.y = asin(clamp(R.y, -1.0, 1.0)) / PI + 0.5;
+
+                vec3 reflColor = texture(uReflMap, reflUV).rgb;
+                color = mix(color, reflColor, clamp(uKs, 0.0, 1.0));
+
+                color = reflColor;
+            }
+
+            out_color = vec4(color, 1.0);
         }";
 
         // ======= GÉOMÉTRIE 3D (cube simple) =======

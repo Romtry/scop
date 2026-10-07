@@ -78,6 +78,20 @@ namespace Scop
 						else
 							Console.WriteLine($"Texture introuvable : {texPath}");
 						break;
+					case "map_Ns":
+						string texPathNs = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
+						if (File.Exists(texPathNs))
+							current.NsTextureId = LoadTexture(Gl, texPathNs, Shader);
+						else
+							Console.WriteLine($"Texture introuvable : {texPathNs}");
+						break;
+					case "map_refl":
+						string texPathrefl = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
+						if (File.Exists(texPathrefl))
+							current.reflTextureId = LoadTexture(Gl, texPathrefl, Shader);
+						else
+							Console.WriteLine($"Texture introuvable : {texPathrefl}");
+						break;
 				}
 			}
 			return materials;

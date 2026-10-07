@@ -29,7 +29,6 @@ namespace Scop
 			Gl.UseProgram(Shader);
 			Gl.ActiveTexture(TextureUnit.Texture0);
             Gl.BindTexture(TextureTarget.Texture3D, _texture);
-			// Gl.Uniform1(Gl.GetUniformLocation(Shader, "uTexture"), 0);
 
 			var model = Matrix4X4<float>.Identity;
 
@@ -108,9 +107,27 @@ namespace Scop
 					Gl.Uniform1(_camModeLoc, 0);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
 				}
-				Gl.Uniform1(Scop._hasTextures, 1);
-				Gl.BindTexture(TextureTarget.Texture2D, Materials[usemtl[i].Item1].TextureId);
-				Gl.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, (void*)(startIndex * sizeof(uint)));
+				if (Materials[usemtl[i].Item1].TextureId != null)
+				{
+					Gl.Uniform1(Scop._hasTextures, 1);
+					Gl.ActiveTexture(TextureUnit.Texture0);
+					Gl.BindTexture(TextureTarget.Texture2D, Materials[usemtl[i].Item1].TextureId);
+					Gl.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, (void*)(startIndex * sizeof(uint)));
+				}
+				if (Materials[usemtl[i].Item1].NsTextureId != null)
+				{
+					Gl.Uniform1(Scop._hasNsTextures, 1);
+					Gl.ActiveTexture(TextureUnit.Texture1);
+					Gl.BindTexture(TextureTarget.Texture2D, Materials[usemtl[i].Item1].NsTextureId);
+					Gl.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, (void*)(startIndex * sizeof(uint)));
+				}
+				if (Materials[usemtl[i].Item1].reflTextureId != null)
+				{
+					Gl.Uniform1(Scop._hasReflTextures, 1);
+					Gl.ActiveTexture(TextureUnit.Texture2);
+					Gl.BindTexture(TextureTarget.Texture2D, Materials[usemtl[i].Item1].reflTextureId);
+					Gl.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, (void*)(startIndex * sizeof(uint)));
+				}
 			}
 		}
 	}
