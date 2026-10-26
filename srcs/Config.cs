@@ -8,5 +8,6 @@ namespace Scop
 		public const float 	Sensitivity = 0.1f;
 		public const int 	WindowWidth = 800;
 		public const int 	WindowHeight = 600;
+		public const int	TransitionDuration = 2;
 	}
 }

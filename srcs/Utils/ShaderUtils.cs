@@ -29,6 +29,7 @@ namespace Scop
             Scop._hasTextures       = Gl.GetUniformLocation(Shader, "uHasTexture");
             Scop._hasNsTextures     = Gl.GetUniformLocation(Shader, "uHasNsTexture");
             Scop._hasReflTextures   = Gl.GetUniformLocation(Shader, "uHasReflTexture");
+            Scop._transition        = Gl.GetUniformLocation(Shader, "transition");
         }
 
         public static uint CompileShader(GL Gl, ShaderType type, string source)

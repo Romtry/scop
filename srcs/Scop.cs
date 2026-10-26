@@ -16,7 +16,6 @@ namespace Scop
         public  static  GL       Gl;
         private static  bool     is3D;
 
-
         private static uint Vbo;
         private static uint Ebo;
         private static uint Vao;
@@ -37,6 +36,7 @@ namespace Scop
         public static int _hasTextures;
         public static int _hasNsTextures;
         public static int _hasReflTextures;
+        public static int _transition;
 
         private static Matrix4X4<float> _projection;
         private static Matrix4X4<float> _view;

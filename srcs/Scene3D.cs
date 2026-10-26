@@ -32,19 +32,19 @@ namespace Scop
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
             frag_texCoords = aTextureCoord;
             frag_color = 0.5 + 0.5 * cos(uTime + aPosition.xyx * 2.0 + vec3(0.0, 2.0, 4.0));
-            switch (uCamMode)
-            {
-                case(0):
-                {
-                    frag_color = vec3(uKd);
-                    break;
-                }
-                case(2):
-                {
-                    frag_color = vec3(0.0, 0.0, 0.0);
-                    break;
-                }
-            }
+            // switch (uCamMode)
+            // {
+            //     case(0):
+            //     {
+            //         frag_color = vec3(uKd);
+            //         break;
+            //     }
+            //     case(2):
+            //     {
+            //         frag_color = vec3(0.0, 0.0, 0.0);
+            //         break;
+            //     }
+            // }
         }";
 
         private static readonly string FragmentShaderSource3D = @"
@@ -57,7 +57,8 @@ namespace Scop
         uniform int uHasNsTexture;
         uniform int uHasReflMap;
 
-        uniform float uModeBlend; 
+        uniform float transition;
+
         const float PI = 3.14159265;
         uniform int uCamMode;
 
@@ -77,17 +78,26 @@ namespace Scop
         void main()
         {
             vec3 texColor = frag_color;
-            // vec3 baseColor = frag_color;
-            if (uCamMode == 0 && uHasTexture == 1)
+            float t = smoothstep(0.0, 1.0, transition);
+            vec3 baseColor = texColor;
+            if (uHasTexture == 1)
             {
                 vec4 tex = texture(uTexture, frag_texCoords);
                 texColor = tex.rgb;
-                // baseColor = texture(uTexture, frag_texCoords).rgb;
             }
 
-            vec3 rgbColor = frag_color;
-            float t = smoothstep(0.0, 1.0, uModeBlend);
-            vec3 baseColor = mix(texColor, rgbColor, t);
+            if (uCamMode == 0)
+            {
+                baseColor = mix(frag_color, texColor, t);
+            }
+
+            else if (uCamMode == 2)
+            {
+                texColor = vec3(0.0, 0.0, 0.0);
+                baseColor = mix(frag_color, texColor, t);
+            }
+            else
+                baseColor = mix(texColor, frag_color, t);
 
             vec3 norm = normalize(frag_normal);
             vec3 lightDir = normalize(uLightPos - frag_pos);
@@ -111,7 +121,7 @@ namespace Scop
 
             if (uHasReflMap == 1)
             {
-                vec3 I = normalize(frag_pos - uViewPos);   // caméra -> fragment
+                vec3 I = normalize(frag_pos - uViewPos);
                 vec3 R = reflect(I, norm);
 
                 vec2 reflUV;
@@ -123,7 +133,6 @@ namespace Scop
 
                 color = reflColor;
             }
-
             out_color = vec4(color, 1.0);
         }";
 

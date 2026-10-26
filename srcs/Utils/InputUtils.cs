@@ -4,11 +4,17 @@ using System;
 using Silk.NET.Maths;
 using System.Numerics;
 using Silk.NET.OpenGL;
+using System.Diagnostics;
+
 
 namespace Scop
 {
     public static class InputUtils
     {
+        public static readonly Stopwatch _clock = Stopwatch.StartNew();
+
+        public static double _transitionStart = 0;
+
         public static float CamX  = 0f;
         public static float CamY  = 0f;
         public static float CamZ  = 3f;
@@ -44,7 +50,11 @@ namespace Scop
 
         public static void KeyDown(IWindow window, Key key, int arg3)
         {
-            if (key == Key.E)                       ++CamMode;
+            if (key == Key.E)
+            {
+                ++CamMode;
+                _transitionStart = _clock.Elapsed.TotalSeconds;
+            }
             if (key == Key.L)                       ++LightLvl;
             if (key == Key.Escape)                  window.Close();
             if (key == Key.Left  || key == Key.A)   MoveLeft    = true;

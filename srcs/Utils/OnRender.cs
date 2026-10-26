@@ -65,6 +65,13 @@ namespace Scop
 
 			if (usemtl.Count == 0)
 			{
+				double now = InputUtils._clock.Elapsed.TotalSeconds;
+				float t = (float)((now - InputUtils._transitionStart) / Config.TransitionDuration);
+				if (t >= 1)
+					Gl.Uniform1(_transition, 1);
+				else
+					Gl.Uniform1(_transition, t);
+
 				Vector3 kd = new Vector3(1.0f, 1.0f, 1.0f);
 				Gl.Uniform3(_kdLoc, ref kd);
 				Vector3 ks = new Vector3(0f, 0f, 0f);
@@ -86,6 +93,13 @@ namespace Scop
 
 			for (int i = 0; i < usemtl.Count; i++)
 			{
+				double now = InputUtils._clock.Elapsed.TotalSeconds;
+				float t = (float)((now - InputUtils._transitionStart) / Config.TransitionDuration);
+				if (t >= 2)
+					Gl.Uniform1(_transition, 1);
+				else
+					Gl.Uniform1(_transition, t / 2);
+
 				var kd = Materials[usemtl[i].Item1].Diffuse;
 				Gl.Uniform3(_kdLoc, ref kd);
 				var ks = Materials[usemtl[i].Item1].SpecularColor;
