@@ -68,7 +68,7 @@ namespace Scop
 				double now = InputUtils._clock.Elapsed.TotalSeconds;
 				float t = (float)((now - InputUtils._transitionStart) / Config.TransitionDuration);
 				if (t >= 1)
-					Gl.Uniform1(_transition, 1);
+					Gl.Uniform1(_transition, 1f);
 				else
 					Gl.Uniform1(_transition, t);
 
@@ -94,11 +94,11 @@ namespace Scop
 			for (int i = 0; i < usemtl.Count; i++)
 			{
 				double now = InputUtils._clock.Elapsed.TotalSeconds;
-				float t = (float)((now - InputUtils._transitionStart) / Config.TransitionDuration);
-				if (t >= 1)
-					Gl.Uniform1(_transition, 1);
+				_transitionRatio = (float)(((now - InputUtils._transitionStart) / Config.TransitionDuration) + (1 - InputUtils._transitionSave));
+				if (_transitionRatio >= 1)
+					Gl.Uniform1(_transition, 1f);
 				else
-					Gl.Uniform1(_transition, t);
+					Gl.Uniform1(_transition, _transitionRatio);
 
 				var kd = Materials[usemtl[i].Item1].Diffuse;
 				Gl.Uniform3(_kdLoc, ref kd);

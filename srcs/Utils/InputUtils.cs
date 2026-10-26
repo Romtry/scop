@@ -14,6 +14,7 @@ namespace Scop
         public static readonly Stopwatch _clock = Stopwatch.StartNew();
 
         public static double _transitionStart = 0;
+        public static float _transitionSave = 0;
 
         public static float CamX  = 0f;
         public static float CamY  = 0f;
@@ -53,7 +54,20 @@ namespace Scop
             if (key == Key.E)
             {
                 ++CamMode;
-                _transitionStart = _clock.Elapsed.TotalSeconds;
+                if (CamMode % 3 != 0)
+                    _transitionStart = _clock.Elapsed.TotalSeconds;
+                if (CamMode % 3 == 0)
+                {
+                    if (Scop._transitionRatio >= 1)
+                        _transitionSave = 0;
+                }
+                else
+                {
+                    if (Scop._transitionRatio >= 1)
+                        _transitionSave = 1f;
+                    else
+                        _transitionSave = Scop._transitionRatio;
+                }
             }
             if (key == Key.L)                       ++LightLvl;
             if (key == Key.Escape)                  window.Close();

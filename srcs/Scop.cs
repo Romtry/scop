@@ -37,6 +37,7 @@ namespace Scop
         public static int _hasNsTextures;
         public static int _hasReflTextures;
         public static int _transition;
+        public static float _transitionRatio;
 
         private static Matrix4X4<float> _projection;
         private static Matrix4X4<float> _view;
