@@ -85,6 +85,8 @@ namespace Scop
                 vec4 tex = texture(uTexture, frag_texCoords);
                 texColor = tex.rgb;
             }
+            else
+                texColor = vec3(1.0, 1.0, 1.0);
 
             if (uCamMode == 0)
             {
