@@ -95,10 +95,10 @@ namespace Scop
 			{
 				double now = InputUtils._clock.Elapsed.TotalSeconds;
 				float t = (float)((now - InputUtils._transitionStart) / Config.TransitionDuration);
-				if (t >= 2)
+				if (t >= 1)
 					Gl.Uniform1(_transition, 1);
 				else
-					Gl.Uniform1(_transition, t / 2);
+					Gl.Uniform1(_transition, t);
 
 				var kd = Materials[usemtl[i].Item1].Diffuse;
 				Gl.Uniform3(_kdLoc, ref kd);
