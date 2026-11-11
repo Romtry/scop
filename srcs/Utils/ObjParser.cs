@@ -93,6 +93,15 @@ namespace Scop
                 }
             }
 
+            float minY = float.MaxValue, maxY = float.MinValue;
+            float minZ = float.MaxValue, maxZ = float.MinValue;
+            foreach (var p in positions)
+            {
+                minY = Math.Min(minY, p.Item2); maxY = Math.Max(maxY, p.Item2);
+                minZ = Math.Min(minZ, p.Item3); maxZ = Math.Max(maxZ, p.Item3);
+            }
+            float sizeY = (maxY - minY) == 0 ? 1 : (maxY - minY);
+            float sizeZ = (maxZ - minZ) == 0 ? 1 : (maxZ - minZ);
 
             var vertices = new Vertex3D[faceVertices.Count];
             for (int i = 0; i < faceVertices.Count; i++)
@@ -100,7 +109,11 @@ namespace Scop
                 var fv = faceVertices[i];
                 var pos = positions[fv.PosIndex];
                 var normal = fv.NormalIndex >= 0 ? normals[fv.NormalIndex] : (0, 0, 1);
-                var tex = fv.TexIndex >= 0 ? texCoords[fv.TexIndex] : (0, 0);
+                (float, float) tex;
+                if (fv.TexIndex >= 0 && fv.TexIndex < texCoords.Count)
+                    tex = texCoords[fv.TexIndex];
+                else
+                    tex = ((pos.Item3 - minZ) / sizeZ, (pos.Item2 - minY) / sizeY);
 
                 vertices[i] = new Vertex3D
                 {
