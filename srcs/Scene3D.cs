@@ -32,19 +32,6 @@ namespace Scop
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
             frag_texCoords = aTextureCoord;
             frag_color = 0.5 + 0.5 * cos(uTime + aPosition.xyx * 2.0 + vec3(0.0, 2.0, 4.0));
-            // switch (uCamMode)
-            // {
-            //     case(0):
-            //     {
-            //         frag_color = vec3(uKd);
-            //         break;
-            //     }
-            //     case(2):
-            //     {
-            //         frag_color = vec3(0.0, 0.0, 0.0);
-            //         break;
-            //     }
-            // }
         }";
 
         private static readonly string FragmentShaderSource3D = @"
