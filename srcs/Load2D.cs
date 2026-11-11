@@ -1,6 +1,5 @@
 using Silk.NET.OpenGL;
 using Silk.NET.Maths;
-using StbImageSharp;
 using System.IO;
 
 namespace Scop
@@ -40,10 +39,10 @@ namespace Scop
             Gl.ActiveTexture(TextureUnit.Texture0);
             Gl.BindTexture(TextureTarget.Texture2D, _texture);
 
-            ImageResult result = ImageResult.FromMemory(File.ReadAllBytes(IMAGE_PATH), ColorComponents.RedGreenBlueAlpha);
-            fixed (byte* ptr = result.Data)
-                Gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)result.Width,
-                    (uint)result.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
+            var (data, width, height) = PngLoader.Load(IMAGE_PATH);
+            fixed (byte* ptr = data)
+                Gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width,
+                    (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
 
             Gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureWrapS, (int)TextureWrapMode.Repeat);
             Gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureWrapT, (int)TextureWrapMode.Repeat);

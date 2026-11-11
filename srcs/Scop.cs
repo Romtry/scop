@@ -3,7 +3,6 @@ using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using System;
 using Silk.NET.Maths;
-using StbImageSharp;
 using System.IO;
 
 namespace Scop

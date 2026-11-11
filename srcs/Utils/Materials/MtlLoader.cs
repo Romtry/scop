@@ -1,7 +1,6 @@
 using System.Numerics;
 using System.Globalization;
 using Silk.NET.OpenGL;
-using StbImageSharp;
 
 namespace Scop
 {
@@ -9,14 +8,13 @@ namespace Scop
 	{
 		private static unsafe uint LoadTexture(GL Gl, string path, uint Shader)
 		{
-			StbImage.stbi_set_flip_vertically_on_load(1);
+			var (data, width, height) = PngLoader.Load(path);
 
 			uint id = Gl.GenTexture();
 			Gl.BindTexture(TextureTarget.Texture2D, id);
 
-			ImageResult img = ImageResult.FromMemory(File.ReadAllBytes(path), ColorComponents.RedGreenBlueAlpha);
-			fixed (byte* ptr = img.Data)
-				Gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)img.Width, (uint)img.Height,
+			fixed (byte* ptr = data)
+				Gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width, (uint)height,
 							0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
 
 			Gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureWrapS, (int)TextureWrapMode.Repeat);

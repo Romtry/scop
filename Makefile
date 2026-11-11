@@ -15,6 +15,9 @@ deps:
 	@$(DOTNET) restore $(PROJECT)
 	@echo "✔ Dépendances OK"
 
+libs:
+	grep -rh "^using" --include="*.cs" . | sort -u
+
 build:
 	dotnet build
 
