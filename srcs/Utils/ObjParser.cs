@@ -64,59 +64,86 @@ namespace Scop
             var texCoords = new List<(float, float)>();
             var faceVertices = new List<FaceVertex>();
 
-
-            foreach (string line in File.ReadLines(filePath))
+            try
             {
-                string trimmed = line.Trim();
+                foreach (string line in File.ReadLines(filePath))
+                {
+                    string trimmed = line.Trim();
 
-                if (trimmed.StartsWith("#") || string.IsNullOrEmpty(trimmed))
-                    continue;
+                    if (trimmed.StartsWith("#") || string.IsNullOrEmpty(trimmed))
+                        continue;
 
-                if (trimmed.StartsWith("v "))
-                {
-                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-                    float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
-                    float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
-                    float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
-                    positions.Add((x, y, z));
-                }
-                else if (trimmed.StartsWith("vn "))
-                {
-                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-                    float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
-                    float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
-                    float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
-                    normals.Add((x, y, z));
-                }
-                else if (trimmed.StartsWith("vt "))
-                {
-                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-                    float u = float.Parse(parts[1], CultureInfo.InvariantCulture);
-                    float v = float.Parse(parts[2], CultureInfo.InvariantCulture);
-                    texCoords.Add((u, v));
-                }
-                else if (trimmed.StartsWith("f "))
-                {
-                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-
-                    for (int i = 2; i < parts.Length - 1; i++)
+                    if (trimmed.StartsWith("v "))
                     {
-                        ParseFaceVertex(parts[1],     positions, normals, texCoords, faceVertices);
-                        ParseFaceVertex(parts[i],     positions, normals, texCoords, faceVertices);
-                        ParseFaceVertex(parts[i + 1], positions, normals, texCoords, faceVertices);
+                        var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 4)
+                            throw new InvalidDataException($"'v' error : {trimmed}");
+                        float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                        float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                        float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
+                        positions.Add((x, y, z));
+                    }
+                    else if (trimmed.StartsWith("vn "))
+                    {
+                        var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 4)
+                            throw new InvalidDataException($"'vn' error : {trimmed}"); 
+                        float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                        float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                        float z = float.Parse(parts[3], CultureInfo.InvariantCulture);
+                        normals.Add((x, y, z));
+                    }
+                    else if (trimmed.StartsWith("vt "))
+                    {
+                        var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 3)
+                            throw new InvalidDataException($"'vt' error : {trimmed}");
+                        float u = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                        float v = float.Parse(parts[2], CultureInfo.InvariantCulture);
+                        texCoords.Add((u, v));
+                    }
+                    else if (trimmed.StartsWith("f "))
+                    {
+                        var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 4)
+                            throw new InvalidDataException($"less than 3 Vertex : {trimmed}");
+
+                        for (int i = 2; i < parts.Length - 1; i++)
+                        {
+                            ParseFaceVertex(parts[1],     positions, normals, texCoords, faceVertices);
+                            ParseFaceVertex(parts[i],     positions, normals, texCoords, faceVertices);
+                            ParseFaceVertex(parts[i + 1], positions, normals, texCoords, faceVertices);
+                        }
+                    }
+                    else if (trimmed.StartsWith("mtllib "))
+                    {
+                        var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 2)
+                            throw new InvalidDataException($"no mtllib : {trimmed}");
+                        mtlFile = parts[1];
+                    }
+                    else if (trimmed.StartsWith("usemtl "))
+                    {
+                        var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length < 2)
+                            throw new InvalidDataException($"no usemtl : {trimmed}");
+                        usemtl.Add ((parts[1], faceVertices.Count));
                     }
                 }
-                else if (trimmed.StartsWith("mtllib "))
-                {
-                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-                    mtlFile = parts[1];
-                }
-                else if (trimmed.StartsWith("usemtl "))
-                {
-                    var parts = trimmed.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-                    usemtl.Add ((parts[1], faceVertices.Count));
-                }
+                if (positions.Count == 0)
+                    throw new InvalidDataException("no v Vertex");
+                if (faceVertices.Count == 0)
+                    throw new InvalidDataException("no f Vertex");
             }
+
+            catch (InvalidDataException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+                return (null, null, null, null);
+            }
+
 
             float minX = float.MaxValue, maxX = float.MinValue;
             float minY = float.MaxValue, maxY = float.MinValue;

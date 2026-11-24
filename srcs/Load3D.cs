@@ -25,9 +25,10 @@ namespace Scop
             Gl.Enable(EnableCap.DepthTest);
             Gl.DepthFunc(DepthFunction.Less);
 
-
             // Parse OBJ
             var (vertices3D, indices3D, mtllib, parsedUsemtl) = ObjParser.ParseOBJ(IMAGE_PATH);
+            if (vertices3D == null || indices3D == null || mtllib == null || parsedUsemtl == null)
+                System.Environment.Exit(1);
             usemtl = parsedUsemtl;
             _indexCount = (uint)indices3D.Length;
 
@@ -61,6 +62,7 @@ namespace Scop
             );
 
             _model = MatrixUtils.CreateIdentity();
+
         }
     }
 }

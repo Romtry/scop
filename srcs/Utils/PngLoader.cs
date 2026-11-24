@@ -11,7 +11,7 @@ public static class PngLoader
         byte[] sig = { 137, 80, 78, 71, 13, 10, 26, 10 };
         for (int i = 0; i < 8; i++)
             if (file[i] != sig[i])
-                throw new InvalidDataException($"{path} n'est pas un fichier PNG");
+                throw new InvalidDataException($"{path} not a PNG file");
 
         int width = 0, height = 0, bitDepth = 0, colorType = 0, interlace = 0;
         byte[]? palette = null;
@@ -49,9 +49,9 @@ public static class PngLoader
         }
 
         if (bitDepth != 8)
-            throw new NotSupportedException($"{path} : seule la profondeur 8 bits est supportée");
+            throw new NotSupportedException($"{path} : not a 8 bits");
         if (interlace != 0)
-            throw new NotSupportedException($"{path} : PNG entrelacé non supporté");
+            throw new NotSupportedException($"{path} : interlaced PNG not supported");
 
         int bpp = colorType switch
         {
@@ -60,7 +60,7 @@ public static class PngLoader
             3 => 1,
             4 => 2,
             6 => 4,
-            _ => throw new NotSupportedException($"colorType {colorType} non supporté")
+            _ => throw new NotSupportedException($"colorType {colorType} not handled")
         };
 
         idat.Position = 0;
@@ -93,7 +93,7 @@ public static class PngLoader
                     2 => (byte)(cur + b),
                     3 => (byte)(cur + ((a + b) >> 1)),
                     4 => (byte)(cur + Paeth(a, b, c)),
-                    _ => throw new InvalidDataException($"Filtre PNG inconnu : {filter}")
+                    _ => throw new InvalidDataException($"PNG unknown : {filter}")
                 };
             }
             Array.Copy(pixels, rowStart, prev, 0, stride);
