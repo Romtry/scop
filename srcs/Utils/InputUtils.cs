@@ -23,6 +23,7 @@ namespace Scop
         public static int   CamMode = 0;
         public static int   Sprint  = 1;
 
+        public static bool TranslateMode = false;
         public static bool MoveForward  = false;
         public static bool MoveBack     = false;
         public static bool MoveLeft     = false;
@@ -72,6 +73,13 @@ namespace Scop
                     else
                         _transitionSave = Scop._transitionRatio;
                 }
+            }
+            if (key == Key.Tab)
+            {
+                if (TranslateMode == true)
+                    TranslateMode = false;
+                else
+                    TranslateMode = true;
             }
             if (key == Key.L)                       ++LightLvl;
             if (key == Key.Escape)                  window.Close();
@@ -155,18 +163,44 @@ namespace Scop
             if (MoveLeft)       CamPos -= right    * speed;
             if (MoveUp)         CamPos += up       * speed;
             if (MoveDown)       CamPos -= up       * speed;
-            if (RotateUp)       Scop._rotX -= Config.RotSpeed * (float)deltaTime;
-            if (RotateDown)     Scop._rotX += Config.RotSpeed * (float)deltaTime;
+            if (RotateUp)
+            {
+                if (TranslateMode == true)
+                {
+                    if (Sprint == 1)
+                        Scop._objPos.Y += speed;
+                    else
+                        Scop._objPos.Z -= speed;
+                }
+                else
+                    Scop._rotX += Config.RotSpeed * (float)deltaTime;
+            }
+            if (RotateDown)
+            {
+                if (TranslateMode == true)
+                {
+                    if (Sprint == 1)
+                        Scop._objPos.Y -= speed;
+                    else
+                        Scop._objPos.Z += speed;
+                }
+                else
+                    Scop._rotX -= Config.RotSpeed * (float)deltaTime;
+            }
             if (RotateLeft)
             {
-                if (Sprint != 1)
+                if (TranslateMode == true)
+                    Scop._objPos.X -= speed;
+                else if (Sprint != 1)
                     Scop._rotZ -= Config.RotSpeed * (float)deltaTime;
                 else
                     Scop._rotY -= Config.RotSpeed * (float)deltaTime;
             }
             if (RotateRight)
             {
-                if (Sprint != 1)
+                if (TranslateMode == true)
+                    Scop._objPos.X += speed;
+                else if (Sprint != 1)
                     Scop._rotZ += Config.RotSpeed * (float)deltaTime;
                 else
                     Scop._rotY += Config.RotSpeed * (float)deltaTime;

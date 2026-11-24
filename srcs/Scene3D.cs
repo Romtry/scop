@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Scop
 {
     partial class Scop
@@ -169,8 +171,8 @@ namespace Scop
             20, 21, 22,  20, 22, 23,  // bottom
         };
 
-
         // pour la rotation 3D
+        public static Vector3 _objPos = Vector3.Zero;
         public static float     _rotX = 0f;
         public static float     _rotY = 0f;
         public static float     _rotZ = 0f;
