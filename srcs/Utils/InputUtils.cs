@@ -29,8 +29,12 @@ namespace Scop
         public static bool MoveRight    = false;
         public static bool MoveUp       = false;
         public static bool MoveDown     = false;
+        public static bool RotateLeft     = false;
+        public static bool RotateRight    = false;
+        public static bool RotateUp       = false;
+        public static bool RotateDown     = false;
 
-         public static int LightLvl = 3;
+        public static int LightLvl = 3;
 
         public static void SetupInput(IWindow window, Action<IWindow, Key, int> onKeyDown)
         {
@@ -71,10 +75,14 @@ namespace Scop
             }
             if (key == Key.L)                       ++LightLvl;
             if (key == Key.Escape)                  window.Close();
-            if (key == Key.Left  || key == Key.A)   MoveLeft    = true;
-            if (key == Key.Right || key == Key.D)   MoveRight   = true;
-            if (key == Key.Up    || key == Key.W)   MoveForward = true;
-            if (key == Key.Down  || key == Key.S)   MoveBack    = true;
+            if (key == Key.Left)                    RotateLeft  = true;
+            if (key == Key.Right)                   RotateRight = true;
+            if (key == Key.Up)                      RotateUp    = true;
+            if (key == Key.Down)                    RotateDown  = true;
+            if (key == Key.A)                       MoveLeft    = true;
+            if (key == Key.D)                       MoveRight   = true;
+            if (key == Key.W)                       MoveForward = true;
+            if (key == Key.S)                       MoveBack    = true;
             if (key == Key.Space)                   MoveUp      = true;
             if (key == Key.ControlLeft)             MoveDown    = true;
             if (key == Key.ShiftLeft)               Sprint      = Config.SprintMultiplier;
@@ -82,10 +90,14 @@ namespace Scop
 
         public static void KeyUp(Key key)
         {
-            if (key == Key.Left  || key == Key.A)   MoveLeft    = false;
-            if (key == Key.Right || key == Key.D)   MoveRight   = false;
-            if (key == Key.Up    || key == Key.W)   MoveForward = false;
-            if (key == Key.Down  || key == Key.S)   MoveBack    = false;
+            if (key == Key.Left)                    RotateLeft  = false;
+            if (key == Key.Right)                   RotateRight = false;
+            if (key == Key.Up)                      RotateUp    = false;
+            if (key == Key.Down)                    RotateDown  = false;
+            if (key == Key.A)                       MoveLeft    = false;
+            if (key == Key.D)                       MoveRight   = false;
+            if (key == Key.W)                       MoveForward = false;
+            if (key == Key.S)                       MoveBack    = false;
             if (key == Key.Space)                   MoveUp      = false;
             if (key == Key.ControlLeft)             MoveDown    = false;
             if (key == Key.ShiftLeft)               Sprint      = 1;
@@ -137,12 +149,16 @@ namespace Scop
             Vector3D<float> up    = new(0, 1, 0);
             Vector3D<float> right = Vector3D.Normalize(Vector3D.Cross(CamFront, up));
 
-            if (MoveForward) CamPos += CamFront * speed;
-            if (MoveBack)    CamPos -= CamFront * speed;
-            if (MoveRight)   CamPos += right    * speed;
-            if (MoveLeft)    CamPos -= right    * speed;
-            if (MoveUp)      CamPos += up       * speed;
-            if (MoveDown)    CamPos -= up       * speed;
+            if (MoveForward)    CamPos += CamFront * speed;
+            if (MoveBack)       CamPos -= CamFront * speed;
+            if (MoveRight)      CamPos += right    * speed;
+            if (MoveLeft)       CamPos -= right    * speed;
+            if (MoveUp)         CamPos += up       * speed;
+            if (MoveDown)       CamPos -= up       * speed;
+            if (RotateLeft)     Scop._rotY -= Config.RotSpeed * (float)deltaTime;
+            if (RotateRight)    Scop._rotY += Config.RotSpeed * (float)deltaTime;
+            if (RotateUp)       Scop._rotX -= Config.RotSpeed * (float)deltaTime;
+            if (RotateDown)     Scop._rotX += Config.RotSpeed * (float)deltaTime;
         }
     }
 }

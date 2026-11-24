@@ -161,7 +161,7 @@ namespace Scop
 
             var vertices = new Vertex3D[faceVertices.Count];
             (float, float, float) faceN = (0f, 0f, 1f);
-            var center = (minX + sizeX / 2f, minY + sizeY / 2f, minZ + sizeZ / 2f);
+            Scop.center = (minX + sizeX / 2f, minY + sizeY / 2f, minZ + sizeZ / 2f);
             for (int i = 0; i < faceVertices.Count; i++)
             {
                 // no stretching

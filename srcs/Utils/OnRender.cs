@@ -30,7 +30,9 @@ namespace Scop
 			Gl.ActiveTexture(TextureUnit.Texture0);
             Gl.BindTexture(TextureTarget.Texture3D, _texture);
 
-			var model = Matrix4X4<float>.Identity;
+			var model = Matrix4x4.CreateTranslation(-center.Item1, -center.Item2, -center.Item3)
+			* Matrix4x4.CreateRotationX(_rotX)
+			* Matrix4x4.CreateRotationY(_rotY);
 
 			var camPos = new Vector3D<float>(InputUtils.CamX, InputUtils.CamY, InputUtils.CamZ);
 

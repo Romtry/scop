@@ -171,7 +171,8 @@ namespace Scop
 
 
         // pour la rotation 3D
-        private static float _angle = 0f;
+        public static float     _rotX = 0f;
+        public static float     _rotY = 0f;
 
         private static float[] _currentVertices;
         private static uint[]  _currentIndices;

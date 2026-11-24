@@ -10,11 +10,12 @@ namespace Scop
     partial class Scop
     {
         private static  string   IMAGE_PATH;
-        public static  string   OBJ_NAME;
+        public static   string   OBJ_NAME;
         private static  IWindow  window;
         public  static  GL       Gl;
         private static  bool     is3D;
 
+        public static  (float, float, float)  center;
         private static uint Vbo;
         private static uint Ebo;
         private static uint Vao;
@@ -41,8 +42,6 @@ namespace Scop
         private static Matrix4X4<float> _projection;
         private static Matrix4X4<float> _view;
         private static Matrix4X4<float> _model;
-
-
 
         private static void Main(string[] args)
         {
@@ -98,6 +97,5 @@ namespace Scop
         {
             Gl.Viewport(newSize);
         }
-
     }
 }
