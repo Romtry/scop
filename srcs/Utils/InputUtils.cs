@@ -155,10 +155,22 @@ namespace Scop
             if (MoveLeft)       CamPos -= right    * speed;
             if (MoveUp)         CamPos += up       * speed;
             if (MoveDown)       CamPos -= up       * speed;
-            if (RotateLeft)     Scop._rotY -= Config.RotSpeed * (float)deltaTime;
-            if (RotateRight)    Scop._rotY += Config.RotSpeed * (float)deltaTime;
             if (RotateUp)       Scop._rotX -= Config.RotSpeed * (float)deltaTime;
             if (RotateDown)     Scop._rotX += Config.RotSpeed * (float)deltaTime;
+            if (RotateLeft)
+            {
+                if (Sprint != 1)
+                    Scop._rotZ -= Config.RotSpeed * (float)deltaTime;
+                else
+                    Scop._rotY -= Config.RotSpeed * (float)deltaTime;
+            }
+            if (RotateRight)
+            {
+                if (Sprint != 1)
+                    Scop._rotZ += Config.RotSpeed * (float)deltaTime;
+                else
+                    Scop._rotY += Config.RotSpeed * (float)deltaTime;
+            }
         }
     }
 }

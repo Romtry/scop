@@ -32,7 +32,8 @@ namespace Scop
 
 			var model = Matrix4x4.CreateTranslation(-center.Item1, -center.Item2, -center.Item3)
 			* Matrix4x4.CreateRotationX(_rotX)
-			* Matrix4x4.CreateRotationY(_rotY);
+			* Matrix4x4.CreateRotationY(_rotY)
+			* Matrix4x4.CreateRotationZ(_rotZ);
 
 			var camPos = new Vector3D<float>(InputUtils.CamX, InputUtils.CamY, InputUtils.CamZ);
 
