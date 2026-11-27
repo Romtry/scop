@@ -55,7 +55,7 @@ namespace Scop
 
             if (!File.Exists(IMAGE_PATH))
             {
-                Console.WriteLine($"Fichier introuvable : {IMAGE_PATH}");
+                Console.WriteLine($"File not find : {IMAGE_PATH}");
                 return;
             }
 
@@ -77,7 +77,7 @@ namespace Scop
                     break;
 
                 default:
-                    Console.WriteLine($"Format non supporté : {extension}");
+                    Console.WriteLine($"Unsupported format : {extension}");
                     return;
             }
 
