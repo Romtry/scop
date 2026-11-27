@@ -29,68 +29,83 @@ namespace Scop
 			var materials = new Dictionary<string, Material>();
 			Material current = null;
 			string baseDir = Path.GetDirectoryName(path);
+			bool	count = false;
 
-			foreach (var line in File.ReadLines(path))
+			try
 			{
-				var parts = line.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-				if (parts.Length == 0) continue;
-
-				switch (parts[0])
+				foreach (var line in File.ReadLines(path))
 				{
-					case "newmtl":
-						current = new Material { Name = parts[1] };
-						materials[parts[1]] = current;
-						break;
+					count = true;
+					var parts = line.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+					if (parts.Length == 0) continue;
 
-					case "Kd":
-						current.Diffuse = new Vector3(
-							float.Parse(parts[1], CultureInfo.InvariantCulture),
-							float.Parse(parts[2], CultureInfo.InvariantCulture),
-							float.Parse(parts[3], CultureInfo.InvariantCulture)
-						);
-						break;
+					switch (parts[0])
+					{
+						case "newmtl":
+							current = new Material { Name = parts[1] };
+							materials[parts[1]] = current;
+							break;
 
-					case "Ka":
-						current.Ambient = new Vector3(
-							float.Parse(parts[1], CultureInfo.InvariantCulture),
-							float.Parse(parts[2], CultureInfo.InvariantCulture),
-							float.Parse(parts[3], CultureInfo.InvariantCulture)
-						);
-						break;
+						case "Kd":
+							current.Diffuse = new Vector3(
+								float.Parse(parts[1], CultureInfo.InvariantCulture),
+								float.Parse(parts[2], CultureInfo.InvariantCulture),
+								float.Parse(parts[3], CultureInfo.InvariantCulture)
+							);
+							break;
 
-					case "Ks":
-						current.SpecularColor = new Vector3(
-							float.Parse(parts[1], CultureInfo.InvariantCulture),
-							float.Parse(parts[2], CultureInfo.InvariantCulture),
-							float.Parse(parts[3], CultureInfo.InvariantCulture)
-						);
-						break;
+						case "Ka":
+							current.Ambient = new Vector3(
+								float.Parse(parts[1], CultureInfo.InvariantCulture),
+								float.Parse(parts[2], CultureInfo.InvariantCulture),
+								float.Parse(parts[3], CultureInfo.InvariantCulture)
+							);
+							break;
 
-					case "Ns":
-						current.SpecularExp = float.Parse(parts[1], CultureInfo.InvariantCulture);
-						break;
-					case "map_Kd":
-						string texPath = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
-						if (File.Exists(texPath))
-							current.TextureId = LoadTexture(Gl, texPath, Shader);
-						else
-							Console.WriteLine($"Texture introuvable : {texPath}");
-						break;
-					case "map_Ns":
-						string texPathNs = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
-						if (File.Exists(texPathNs))
-							current.NsTextureId = LoadTexture(Gl, texPathNs, Shader);
-						else
-							Console.WriteLine($"Texture introuvable : {texPathNs}");
-						break;
-					case "map_refl":
-						string texPathrefl = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
-						if (File.Exists(texPathrefl))
-							current.reflTextureId = LoadTexture(Gl, texPathrefl, Shader);
-						else
-							Console.WriteLine($"Texture introuvable : {texPathrefl}");
-						break;
+						case "Ks":
+							current.SpecularColor = new Vector3(
+								float.Parse(parts[1], CultureInfo.InvariantCulture),
+								float.Parse(parts[2], CultureInfo.InvariantCulture),
+								float.Parse(parts[3], CultureInfo.InvariantCulture)
+							);
+							break;
+
+						case "Ns":
+							current.SpecularExp = float.Parse(parts[1], CultureInfo.InvariantCulture);
+							break;
+						case "map_Kd":
+							string texPath = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
+							if (File.Exists(texPath))
+								current.TextureId = LoadTexture(Gl, texPath, Shader);
+							else
+								Console.WriteLine($"Texture introuvable : {texPath}");
+							break;
+						case "map_Ns":
+							string texPathNs = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
+							if (File.Exists(texPathNs))
+								current.NsTextureId = LoadTexture(Gl, texPathNs, Shader);
+							else
+								Console.WriteLine($"Texture introuvable : {texPathNs}");
+							break;
+						case "map_refl":
+							string texPathrefl = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
+							if (File.Exists(texPathrefl))
+								current.reflTextureId = LoadTexture(Gl, texPathrefl, Shader);
+							else
+								Console.WriteLine($"Texture introuvable : {texPathrefl}");
+							break;
+					}
 				}
+				if (count == false)
+					throw new InvalidDataException("Empty Mtl");
+			}
+
+			catch (InvalidDataException msg)
+			{
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine(msg.Message);
+				Console.ResetColor();
+				return (null);
 			}
 			return materials;
 		}

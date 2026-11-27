@@ -44,6 +44,8 @@ namespace Scop
             {
                 string mtlPath = Path.Combine(Path.GetDirectoryName(IMAGE_PATH), mtllib);
                 Materials = MtlLoader.Load(mtlPath, Gl, Shader);
+                if (Materials == null)
+                    Environment.Exit(1);
             }
 
             // Matrices
@@ -62,7 +64,6 @@ namespace Scop
             );
 
             _model = MatrixUtils.CreateIdentity();
-
         }
     }
 }
