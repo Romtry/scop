@@ -70,11 +70,11 @@ namespace Scop
 			if (usemtl.Count == 0)
 			{
 				double now = InputUtils._clock.Elapsed.TotalSeconds;
-				float t = (float)((now - InputUtils._transitionStart) / Config.TransitionDuration);
-				if (t >= 1)
+				_transitionRatio = (float)(((now - InputUtils._transitionStart) / Config.TransitionDuration) + (1 - InputUtils._transitionSave));
+				if (_transitionRatio >= 1)
 					Gl.Uniform1(_transition, 1f);
 				else
-					Gl.Uniform1(_transition, t);
+					Gl.Uniform1(_transition, _transitionRatio);
 
 				Vector3 kd = new Vector3(1.0f, 1.0f, 1.0f);
 				Gl.Uniform3(_kdLoc, ref kd);
