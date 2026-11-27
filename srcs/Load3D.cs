@@ -27,7 +27,7 @@ namespace Scop
 
             // Parse OBJ
             var (vertices3D, indices3D, mtllib, parsedUsemtl) = ObjParser.ParseOBJ(IMAGE_PATH);
-            if (vertices3D == null || indices3D == null || mtllib == null || parsedUsemtl == null)
+            if (vertices3D == null || indices3D == null || parsedUsemtl == null)
                 System.Environment.Exit(1);
             usemtl = parsedUsemtl;
             _indexCount = (uint)indices3D.Length;
