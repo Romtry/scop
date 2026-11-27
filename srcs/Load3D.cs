@@ -50,19 +50,8 @@ namespace Scop
 
             // Matrices
             float aspectRatio = (float)window.Size.X / window.Size.Y;
-            _projection = MatrixUtils.CreatePerspectiveProjection(
-                MathF.PI / 4.0f,
-                aspectRatio,
-                0.1f,
-                100.0f
-            );
-
-            _view = MatrixUtils.CreateLookAt(
-                InputUtils.CamPos,
-                InputUtils.CamPos + InputUtils.CamFront,
-                new Vector3D<float>(0, 1, 0)
-            );
-
+            _projection = MatrixUtils.CreatePerspectiveProjection(MathF.PI / 4.0f, aspectRatio, 0.1f, 100.0f);
+            _view = MatrixUtils.CreateLookAt(InputUtils.CamPos, InputUtils.CamPos + InputUtils.CamFront, new Vector3D<float>(0, 1, 0));
             _model = MatrixUtils.CreateIdentity();
         }
     }

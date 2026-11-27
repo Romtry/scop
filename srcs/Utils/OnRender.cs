@@ -125,7 +125,7 @@ namespace Scop
 					Gl.Uniform1(_camModeLoc, 0);
 					Gl.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
 				}
-				if (Materials[usemtl[i].Item1].TextureId != null)
+				if (Materials[usemtl[i].Item1].TextureId != 0)
 				{
 					Gl.Uniform1(Scop._hasTextures, 1);
 					Gl.ActiveTexture(TextureUnit.Texture0);

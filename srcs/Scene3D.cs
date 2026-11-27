@@ -63,6 +63,7 @@ namespace Scop
         in vec3 frag_normal;
         in vec3 frag_pos;
         out vec4 out_color;
+        float variation = 0;
 
         void main()
         {
@@ -75,7 +76,10 @@ namespace Scop
                 texColor = tex.rgb;
             }
             else
-                texColor = vec3(1.0, 1.0, 1.0);
+            {
+                float g = 0.3 + 0.6 * fract(sin(float(gl_PrimitiveID) * 13));
+                texColor = vec3(g, g, g);
+            }
 
             if (uCamMode == 0)
             {
