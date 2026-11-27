@@ -35,9 +35,9 @@ namespace Scop
 			{
 				foreach (var line in File.ReadLines(path))
 				{
-					count = true;
 					var parts = line.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 					if (parts.Length == 0) continue;
+					count = true;
 
 					switch (parts[0])
 					{
@@ -47,6 +47,8 @@ namespace Scop
 							break;
 
 						case "Kd":
+							if (current == null)
+								throw new InvalidDataException("Kd before newmtl");
 							current.Diffuse = new Vector3(
 								float.Parse(parts[1], CultureInfo.InvariantCulture),
 								float.Parse(parts[2], CultureInfo.InvariantCulture),
@@ -55,6 +57,8 @@ namespace Scop
 							break;
 
 						case "Ka":
+							if (current == null)
+								throw new InvalidDataException("Ka before newmtl");
 							current.Ambient = new Vector3(
 								float.Parse(parts[1], CultureInfo.InvariantCulture),
 								float.Parse(parts[2], CultureInfo.InvariantCulture),
@@ -63,6 +67,8 @@ namespace Scop
 							break;
 
 						case "Ks":
+							if (current == null)
+								throw new InvalidDataException("Ks before newmtl");
 							current.SpecularColor = new Vector3(
 								float.Parse(parts[1], CultureInfo.InvariantCulture),
 								float.Parse(parts[2], CultureInfo.InvariantCulture),
@@ -71,9 +77,13 @@ namespace Scop
 							break;
 
 						case "Ns":
+							if (current == null)
+								throw new InvalidDataException("Ns before newmtl");
 							current.SpecularExp = float.Parse(parts[1], CultureInfo.InvariantCulture);
 							break;
 						case "map_Kd":
+							if (current == null)
+								throw new InvalidDataException("map_Kd before newmtl");
 							string texPath = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
 							if (File.Exists(texPath))
 								current.TextureId = LoadTexture(Gl, texPath, Shader);
@@ -81,6 +91,8 @@ namespace Scop
 								Console.WriteLine($"Texture introuvable : {texPath}");
 							break;
 						case "map_Ns":
+							if (current == null)
+								throw new InvalidDataException("map_Ns before newmtl");
 							string texPathNs = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
 							if (File.Exists(texPathNs))
 								current.NsTextureId = LoadTexture(Gl, texPathNs, Shader);
@@ -88,6 +100,8 @@ namespace Scop
 								Console.WriteLine($"Texture introuvable : {texPathNs}");
 							break;
 						case "map_refl":
+							if (current == null)
+								throw new InvalidDataException("map_refl before newmtl");
 							string texPathrefl = Path.Combine(baseDir, "Textures", Scop.OBJ_NAME, parts[1]);
 							if (File.Exists(texPathrefl))
 								current.reflTextureId = LoadTexture(Gl, texPathrefl, Shader);
@@ -97,7 +111,9 @@ namespace Scop
 					}
 				}
 				if (count == false)
-					throw new InvalidDataException("Empty Mtl");
+					throw new InvalidDataException("Empty Mtl file");
+				if (current == null)
+					throw new InvalidDataException("No Mtl in Mtl file");
 			}
 
 			catch (InvalidDataException msg)
