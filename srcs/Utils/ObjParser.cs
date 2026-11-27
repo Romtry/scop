@@ -165,17 +165,17 @@ namespace Scop
             for (int i = 0; i < faceVertices.Count; i++)
             {
                 // no stretching
-                // if (i % 3 == 0 && i + 2 < faceVertices.Count)
-                // {
-                //     var pa = positions[faceVertices[i].PosIndex];
-                //     var pb = positions[faceVertices[i + 1].PosIndex];
-                //     var pc = positions[faceVertices[i + 2].PosIndex];
-                //     faceN = FaceNormal(pa, pb, pc);
+                if (i % 3 == 0 && i + 2 < faceVertices.Count)
+                {
+                    var pa = positions[faceVertices[i].PosIndex];
+                    var pb = positions[faceVertices[i + 1].PosIndex];
+                    var pc = positions[faceVertices[i + 2].PosIndex];
+                    faceN = FaceNormal(pa, pb, pc);
 
-                //     var toFace = (pa.Item1 - center.Item1, pa.Item2 - center.Item2, pa.Item3 - center.Item3);
-                //     float dot = faceN.Item1 * toFace.Item1 + faceN.Item2 * toFace.Item2 + faceN.Item3 * toFace.Item3;
-                //     if (dot < 0f) faceN = (-faceN.Item1, -faceN.Item2, -faceN.Item3);
-                // }
+                    var toFace = (pa.Item1 - Scop.center.Item1, pa.Item2 - Scop.center.Item2, pa.Item3 - Scop.center.Item3);
+                    float dot = faceN.Item1 * toFace.Item1 + faceN.Item2 * toFace.Item2 + faceN.Item3 * toFace.Item3;
+                    if (dot < 0f) faceN = (-faceN.Item1, -faceN.Item2, -faceN.Item3);
+                }
 
                 var fv = faceVertices[i];
                 var pos = positions[fv.PosIndex];
@@ -184,21 +184,21 @@ namespace Scop
                 (float, float) tex;
                 if (fv.TexIndex >= 0 && fv.TexIndex < texCoords.Count)
                     tex = texCoords[fv.TexIndex];
-                // else
-                // {
-                //     float ax = Math.Abs(faceN.Item1);
-                //     float ay = Math.Abs(faceN.Item2);
-                //     float az = Math.Abs(faceN.Item3);
-
-                //     if (ax >= ay && ax >= az)
-                //         tex = ((pos.Item3 - minZ) / sizeZ, (pos.Item2 - minY) / sizeY);
-                //     else if (ay >= ax && ay >= az)
-                //         tex = ((pos.Item1 - minX) / sizeX, (pos.Item3 - minZ) / sizeZ);
-                //     else
-                //         tex = ((pos.Item1 - minX) / sizeX, (pos.Item2 - minY) / sizeY);
-                // }
                 else
-                    tex = ((pos.Item3 - minZ) / sizeZ, (pos.Item2 - minY) / sizeY);
+                {
+                    float ax = Math.Abs(faceN.Item1);
+                    float ay = Math.Abs(faceN.Item2);
+                    float az = Math.Abs(faceN.Item3);
+
+                    if (ax >= ay && ax >= az)
+                        tex = ((pos.Item3 - minZ) / sizeZ, (pos.Item2 - minY) / sizeY);
+                    else if (ay >= ax && ay >= az)
+                        tex = ((pos.Item1 - minX) / sizeX, (pos.Item3 - minZ) / sizeZ);
+                    else
+                        tex = ((pos.Item1 - minX) / sizeX, (pos.Item2 - minY) / sizeY);
+                }
+                // else
+                //     tex = ((pos.Item3 - minZ) / sizeZ, (pos.Item2 - minY) / sizeY);
 
                 vertices[i] = new Vertex3D
                 {
